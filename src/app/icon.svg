@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#0b0b0a" />
+  <!-- broken bar: the ceiling being broken through -->
+  <rect x="6" y="15" width="7" height="3" rx="1" fill="#c69a3c" />
+  <rect x="19" y="15" width="7" height="3" rx="1" fill="#c69a3c" />
+  <!-- arrow: rising through the gap, breaking free -->
+  <rect x="13.5" y="15" width="5" height="12" fill="#c69a3c" />
+  <polygon points="16,6 10,15 22,15" fill="#c69a3c" />
+</svg>
