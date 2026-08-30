@@ -3,14 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/generate-thumbnails.mjs",
+    "predev": "node scripts/generate-thumbnails.mjs && node scripts/generate-search-index.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/generate-thumbnails.mjs",
+    "prebuild": "node scripts/generate-thumbnails.mjs && node scripts/generate-search-index.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "fuse.js": "^7.5.0",
     "gray-matter": "^4.0.3",
     "next": "16.2.11",
     "next-mdx-remote": "^6.0.0",

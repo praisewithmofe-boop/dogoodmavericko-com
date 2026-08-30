@@ -5,11 +5,14 @@ import { NavLink } from "@/components/ui/NavLink";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Wordmark } from "@/components/layout/Wordmark";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { SearchTrigger } from "@/components/search/SearchTrigger";
+import { SearchModal } from "@/components/search/SearchModal";
 import { NAV_ITEMS, PRIMARY_CTA } from "@/lib/constants";
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -39,6 +42,8 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-4">
+            <SearchTrigger onClick={() => setSearchOpen(true)} />
+
             <div className="hidden lg:block">
               <CtaButton href={PRIMARY_CTA.href} size="md">
                 {PRIMARY_CTA.label}
@@ -74,8 +79,17 @@ export function SiteHeader() {
       </header>
 
       <div id="mobile-nav">
-        <MobileNav isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+        <MobileNav
+          isOpen={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          onOpenSearch={() => {
+            setMenuOpen(false);
+            setSearchOpen(true);
+          }}
+        />
       </div>
+
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

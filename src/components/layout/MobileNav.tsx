@@ -8,9 +8,10 @@ import { NAV_ITEMS, PRIMARY_CTA, SOCIAL_LINKS } from "@/lib/constants";
 interface MobileNavProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenSearch: () => void;
 }
 
-export function MobileNav({ isOpen, onClose }: MobileNavProps) {
+export function MobileNav({ isOpen, onClose, onOpenSearch }: MobileNavProps) {
   useEffect(() => {
     if (!isOpen) return;
 
@@ -42,6 +43,18 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
           isOpen ? "translate-y-0" : "-translate-y-4"
         }`}
       >
+        <button
+          type="button"
+          onClick={onOpenSearch}
+          className="mb-7 flex items-center gap-3 self-start text-h3 font-semibold text-bone transition-colors duration-200 hover:text-gold-light"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+            <line x1="21" y1="21" x2="16.2" y2="16.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          Search
+        </button>
+
         <nav className="flex flex-col gap-7">
           {NAV_ITEMS.map((item, i) => (
             <div
