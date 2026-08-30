@@ -6,6 +6,7 @@ import {
   siSubstack,
   siTiktok,
   siSnapchat,
+  siX,
   siApplepodcasts,
   siSpotify,
 } from "simple-icons";
@@ -18,6 +19,7 @@ const ICONS = {
   substack: siSubstack,
   tiktok: siTiktok,
   snapchat: siSnapchat,
+  x: siX,
   applepodcasts: siApplepodcasts,
   spotify: siSpotify,
 } as const;

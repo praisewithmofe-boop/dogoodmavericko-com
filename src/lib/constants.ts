@@ -73,6 +73,12 @@ export const SOCIAL_LINKS = [
     icon: "snapchat",
     verb: "Follow",
   },
+  {
+    label: "X",
+    href: "https://x.com/DogoodMavericko",
+    icon: "x",
+    verb: "Follow",
+  },
 ] as const;
 
 export const PODCAST_NAME = "The Dogood Mavericko Podcast";
