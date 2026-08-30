@@ -1,26 +1,99 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------
+   DOGOOD MAVERICKO — GLOBAL DESIGN TOKENS
+   Black / Warm White / Gold editorial system.
+   --------------------------------------------------------------- */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces */
+  --color-paper: #fafaf7;      /* primary background — warm off-white */
+  --color-paper-dim: #f1eee6;  /* secondary/alternating section background */
+  --color-ink: #0b0b0a;        /* primary dark surface (footer, overlays) */
+  --color-ink-soft: #171613;   /* raised dark surface */
+
+  /* Text */
+  --color-charcoal: #201e1a;   /* primary body text on light surfaces */
+  --color-slate: #6f6b62;      /* secondary / meta text on light surfaces */
+  --color-bone: #f4f2ec;       /* primary text on dark surfaces */
+  --color-fog: #a8a49a;        /* secondary / meta text on dark surfaces */
+
+  /* Accent — warm gold */
+  --color-gold: #c69a3c;       /* buttons, active states, key accents */
+  --color-gold-light: #e3c988; /* hover / soft fills on dark surfaces */
+  --color-gold-dark: #8a6524;  /* AA-safe text/links on light surfaces */
+
+  /* Structure */
+  --color-border: #e2ddd0;     /* hairlines on light surfaces */
+  --color-border-dark: #322f29; /* hairlines on dark surfaces */
+
+  --container-max: 1280px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-paper: var(--color-paper);
+  --color-paper-dim: var(--color-paper-dim);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-charcoal: var(--color-charcoal);
+  --color-slate: var(--color-slate);
+  --color-bone: var(--color-bone);
+  --color-fog: var(--color-fog);
+  --color-gold: var(--color-gold);
+  --color-gold-light: var(--color-gold-light);
+  --color-gold-dark: var(--color-gold-dark);
+  --color-border: var(--color-border);
+  --color-border-dark: var(--color-border-dark);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-bricolage), "Helvetica Neue", Arial, sans-serif;
+
+  /* Type scale — one strong sans-serif, hierarchy via size/weight/tracking */
+  --text-display: clamp(2.75rem, 2.05rem + 3vw, 5.25rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-h2: clamp(2rem, 1.65rem + 1.6vw, 3.25rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.015em;
+
+  --text-h3: clamp(1.375rem, 1.2rem + 0.8vw, 1.875rem);
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.01em;
+
+  --text-subhead: clamp(1.125rem, 1.05rem + 0.3vw, 1.375rem);
+  --text-subhead--line-height: 1.4;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.65;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.4;
+  --text-meta--letter-spacing: 0.04em;
+
+  --text-button: 0.9375rem;
+  --text-button--line-height: 1;
+  --text-button--letter-spacing: 0.02em;
+
+  --container-max: var(--container-max);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold-dark);
+  outline-offset: 2px;
 }

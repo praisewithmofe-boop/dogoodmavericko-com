@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dogood-dev",
+      "runtimeExecutable": "/usr/bin/env",
+      "runtimeArgs": [
+        "PATH=/Users/mac/Desktop/CEEBN/.tools/node-v24.18.0-darwin-arm64/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "/Users/mac/Desktop/CEEBN/.tools/node-v24.18.0-darwin-arm64/bin/node",
+        "/Users/mac/Documents/dogood-mavericko/node_modules/next/dist/bin/next",
+        "dev",
+        "--port",
+        "3001"
+      ],
+      "port": 3001
+    }
+  ]
+}
