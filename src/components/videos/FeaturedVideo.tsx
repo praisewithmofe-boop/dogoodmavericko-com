@@ -16,7 +16,7 @@ export function FeaturedVideo({ video }: FeaturedVideoProps) {
         Featured Video
       </span>
 
-      <VideoPlayer youtubeId={video.youtubeId} thumbnail={video.thumbnail} title={video.title} />
+      <VideoPlayer slug={video.slug} youtubeId={video.youtubeId} thumbnail={video.thumbnail} title={video.title} />
 
       <div className="mt-8 flex flex-col gap-4">
         <span className="text-meta font-semibold uppercase tracking-[0.04em] text-gold-dark">

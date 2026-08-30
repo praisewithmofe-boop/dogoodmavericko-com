@@ -23,6 +23,7 @@ export function VideoSection() {
 
       <Link href={`/videos/${featured.slug}`} className="group mb-10 block">
         <VideoThumbnail
+          slug={featured.slug}
           title={featured.title}
           youtubeId={featured.youtubeId}
           thumbnail={featured.thumbnail}

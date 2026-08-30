@@ -11,6 +11,7 @@ export function VideoCard({ video, className = "" }: VideoCardProps) {
   return (
     <Link href={`/videos/${video.slug}`} className={`group flex flex-col gap-4 ${className}`}>
       <VideoThumbnail
+        slug={video.slug}
         title={video.title}
         youtubeId={video.youtubeId}
         thumbnail={video.thumbnail}

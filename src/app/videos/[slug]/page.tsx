@@ -60,7 +60,7 @@ export default async function VideoPage({ params }: VideoPageProps) {
       </Section>
 
       <PageContainer className="mb-16">
-        <VideoPlayer youtubeId={video.youtubeId} thumbnail={video.thumbnail} title={video.title} />
+        <VideoPlayer slug={video.slug} youtubeId={video.youtubeId} thumbnail={video.thumbnail} title={video.title} />
       </PageContainer>
 
       <PageContainer>

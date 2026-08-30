@@ -15,6 +15,7 @@ export function PlayIcon({ size = "md" }: { size?: "md" | "lg" }) {
 }
 
 interface VideoThumbnailProps {
+  slug: string;
   title: string;
   youtubeId?: string;
   thumbnail?: string;
@@ -25,6 +26,7 @@ interface VideoThumbnailProps {
 }
 
 export function VideoThumbnail({
+  slug,
   title,
   youtubeId,
   thumbnail,
@@ -33,7 +35,7 @@ export function VideoThumbnail({
   priority = false,
   className = "",
 }: VideoThumbnailProps) {
-  const image = resolveVideoImage({ youtubeId, thumbnail });
+  const image = resolveVideoImage({ slug, youtubeId, thumbnail });
 
   return (
     <ContentThumbnail

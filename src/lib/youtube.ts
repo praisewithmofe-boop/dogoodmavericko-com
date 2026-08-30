@@ -1,5 +1,5 @@
 export function getYoutubeThumbnail(youtubeId: string): string {
-  return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+  return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
 }
 
 export function getYoutubeEmbedUrl(youtubeId: string): string {

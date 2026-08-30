@@ -12,7 +12,7 @@ export function ArticleCard({ article, className = "" }: ArticleCardProps) {
   return (
     <Link href={`/blog/${article.slug}`} className={`group flex flex-col gap-4 ${className}`}>
       <ContentThumbnail
-        src={resolveBlogImage(article.image)}
+        src={resolveBlogImage(article)}
         alt={`Dogood Mavericko — ${article.title}`}
         ratio="16/9"
       />

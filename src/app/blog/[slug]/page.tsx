@@ -59,7 +59,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       <PageContainer className="mb-16">
         <ContentThumbnail
-          src={resolveBlogImage(post.image)}
+          src={resolveBlogImage(post)}
           alt={`Dogood Mavericko — ${post.title}`}
           ratio="16/9"
           priority

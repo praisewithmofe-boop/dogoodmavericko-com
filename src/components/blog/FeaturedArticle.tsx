@@ -20,7 +20,7 @@ export function FeaturedArticle({ article }: FeaturedArticleProps) {
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
         <Link href={`/blog/${article.slug}`} className="group block">
           <ContentThumbnail
-            src={resolveBlogImage(article.image)}
+            src={resolveBlogImage(article)}
             alt={`Dogood Mavericko — ${article.title}`}
             ratio="16/9"
             priority
