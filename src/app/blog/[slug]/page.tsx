@@ -26,9 +26,14 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const post = getPostBySlug(slug);
   if (!post) return {};
 
+    const title = `${post.title} — Dogood Mavericko`;
+  const image = encodeURI(resolveBlogImage(post));
+
   return {
-    title: `${post.title} — Dogood Mavericko`,
+    title,
     description: post.excerpt,
+    openGraph: { title, description: post.excerpt, images: [image] },
+    twitter: { card: "summary_large_image", title, description: post.excerpt, images: [image] },
   };
 }
 
