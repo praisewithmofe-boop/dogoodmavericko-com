@@ -28,9 +28,14 @@ export async function generateMetadata({ params }: EpisodePageProps): Promise<Me
   const episode = getEpisodeBySlug(slug);
   if (!episode) return {};
 
+  r  const title = `${episode.title} — Dogood Mavericko`;
+  const image = encodeURI(resolvePodcastImage(episode));
+
   return {
-    title: `${episode.title} — Dogood Mavericko`,
+    title,
     description: episode.excerpt,
+    openGraph: { title, description: episode.excerpt, images: [image] },
+    twitter: { card: "summary_large_image", title, description: episode.excerpt, images: [image] },
   };
 }
 
