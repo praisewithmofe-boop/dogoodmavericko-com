@@ -11,7 +11,7 @@ import { Terrific30OptIn } from "@/components/home/Terrific30OptIn";
 import { proseComponents } from "@/components/content/ArticleProse";
 import { getAllVideos, getVideoBySlug, getRelatedVideos, toVideoSummary } from "@/lib/videos";
 import { getAllPosts, toArticleSummary } from "@/lib/content";
-import { formatDate } from "@/lib/format";
+import { resolveVideoImage } from "@/lib/thumbnails";
 
 interface VideoPageProps {
   params: Promise<{ slug: string }>;
@@ -26,9 +26,14 @@ export async function generateMetadata({ params }: VideoPageProps): Promise<Meta
   const video = getVideoBySlug(slug);
   if (!video) return {};
 
+   const title = `${video.title} — Dogood Mavericko`;
+  const image = encodeURI(resolveVideoImage(video));
+
   return {
-    title: `${video.title} — Dogood Mavericko`,
+    title,
     description: video.excerpt,
+    openGraph: { title, description: video.excerpt, images: [image] },
+    twitter: { card: "summary_large_image", title, description: video.excerpt, images: [image] },
   };
 }
 
