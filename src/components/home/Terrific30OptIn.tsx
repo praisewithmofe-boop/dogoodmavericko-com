@@ -1,21 +1,7 @@
-"use client";
-
-import { useState } from "react";
-import type { FormEvent } from "react";
 import { PageContainer } from "@/components/layout/PageContainer";
+import { GhlOptInForm } from "@/components/conversion/GhlOptInForm";
 
 export function Terrific30OptIn() {
-  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
-  const [firstName, setFirstName] = useState("");
-  const [email, setEmail] = useState("");
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!email) return;
-    setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 600);
-  }
-
   return (
     <section className="border-b border-border bg-paper-dim">
       <PageContainer>
@@ -32,49 +18,7 @@ export function Terrific30OptIn() {
           </div>
 
           <div className="flex flex-col gap-3">
-            {status === "success" ? (
-              <p className="text-body font-medium text-gold-dark">
-                You&rsquo;re in. Check your inbox to confirm and get started.
-              </p>
-            ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-3 sm:flex-row sm:items-stretch"
-              >
-                <label htmlFor="t30-first-name" className="sr-only">
-                  First name
-                </label>
-                <input
-                  id="t30-first-name"
-                  type="text"
-                  autoComplete="given-name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="First name"
-                  className="w-full border border-border bg-paper px-4 py-3 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-dark sm:w-40"
-                />
-                <label htmlFor="t30-email" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  id="t30-email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="w-full border border-border bg-paper px-4 py-3 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-dark sm:flex-1"
-                />
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="inline-flex items-center justify-center bg-gold px-6 py-3 text-button font-medium tracking-[0.02em] text-ink uppercase whitespace-nowrap transition-colors duration-200 hover:bg-gold-light disabled:opacity-60"
-                >
-                  {status === "loading" ? "Joining…" : "Join Terrific 30"}
-                </button>
-              </form>
-            )}
+            <GhlOptInForm className="border-border bg-paper" />
             <p className="text-meta tracking-[0.02em] text-slate">
               Free forever. No spam — unsubscribe any time.
             </p>
