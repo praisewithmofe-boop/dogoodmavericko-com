@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: EpisodePageProps): Promise<Me
   const episode = getEpisodeBySlug(slug);
   if (!episode) return {};
 
-  r  const title = `${episode.title} — Dogood Mavericko`;
+  const title = `${episode.title} — Dogood Mavericko`;
   const image = encodeURI(resolvePodcastImage(episode));
 
   return {
