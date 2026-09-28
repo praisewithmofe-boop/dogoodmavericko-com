@@ -12,7 +12,14 @@ import { proseComponents } from "@/components/content/ArticleProse";
 import { getAllVideos, getVideoBySlug, getRelatedVideos, toVideoSummary } from "@/lib/videos";
 import { getAllPosts, toArticleSummary } from "@/lib/content";
 import { resolveVideoImage } from "@/lib/thumbnails";
-
+function formatDate(date: string | Date) {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
 interface VideoPageProps {
   params: Promise<{ slug: string }>;
 }
