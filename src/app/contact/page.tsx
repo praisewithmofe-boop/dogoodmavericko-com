@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+import { getPageOgImagePath } from "@/lib/og-images";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { CtaButton } from "@/components/ui/CtaButton";
 
 const CONTACT_EMAIL = "dogoodmavericko@gmail.com";
 
-export const metadata: Metadata = {
-  title: "Contact Me — Dogood Mavericko",
+export const metadata: Metadata = buildMetadata({
+  title: "Contact Me",
   description: "Get in touch with Dogood Mavericko.",
-};
+  path: "/contact",
+  image: getPageOgImagePath("contact"),
+});
 
 export default function ContactPage() {
   return (

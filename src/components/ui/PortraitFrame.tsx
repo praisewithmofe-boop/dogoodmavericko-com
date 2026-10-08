@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { PORTRAIT_IMAGE } from "@/lib/constants";
+import { optimizedImageUrl } from "@/lib/images";
 
 interface PortraitFrameProps {
   className?: string;
@@ -11,7 +12,7 @@ export function PortraitFrame({ className = "", sizes = "100vw" }: PortraitFrame
     <div className={`relative overflow-hidden bg-paper-dim ${className}`}>
       {PORTRAIT_IMAGE ? (
         <Image
-          src={PORTRAIT_IMAGE}
+          src={optimizedImageUrl(PORTRAIT_IMAGE)}
           alt="Portrait of Dogood Mavericko"
           fill
           sizes={sizes}

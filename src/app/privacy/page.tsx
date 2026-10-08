@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+import { getPageOgImagePath } from "@/lib/og-images";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Section, PageContainer } from "@/components/layout/PageContainer";
 import { proseComponents } from "@/components/content/ArticleProse";
 import { PRIVACY_POLICY_CONTENT, LEGAL_CONTACT_EMAIL, LEGAL_LAST_UPDATED } from "@/lib/legal-content";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy — Dogood Mavericko",
+export const metadata: Metadata = buildMetadata({
+  title: "Privacy Policy",
   description: "How Dogood Mavericko collects, uses, and protects your information.",
-};
+  path: "/privacy",
+  image: getPageOgImagePath("privacy"),
+});
 
 export default function PrivacyPage() {
   return (

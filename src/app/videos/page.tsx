@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
+import { buildMetadata } from "@/lib/seo";
+import { getPageOgImagePath } from "@/lib/og-images";
 import { Section } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FeaturedVideo } from "@/components/videos/FeaturedVideo";
@@ -7,10 +8,12 @@ import { VideoIndexClient } from "@/components/videos/VideoIndexClient";
 import { getAllVideos, toVideoSummary } from "@/lib/videos";
 import { VIDEO_CATEGORIES } from "@/lib/constants";
 
-export const metadata: Metadata = {
-  title: "Videos — Dogood Mavericko",
+export const metadata: Metadata = buildMetadata({
+  title: "Videos",
   description: "Videos on faith, freedom, entrepreneurship, and building an online lifestyle business.",
-};
+  path: "/videos",
+  image: getPageOgImagePath("videos"),
+});
 
 export default function VideosPage() {
   const videos = getAllVideos();
@@ -20,6 +23,7 @@ export default function VideosPage() {
     <div className="flex flex-col">
       <Section tone="paper">
         <SectionHeading
+          as="h1"
           eyebrow="The Video Library"
           title="Watch The Videos"
           description="Faith, freedom, entrepreneurship, and everything in between — on video."
@@ -30,12 +34,7 @@ export default function VideosPage() {
 
       <Section tone="paper-dim">
         <SectionHeading eyebrow="Browse" title="Latest Videos" className="mb-10" />
-        {/* useSearchParams() (for the ?category= deep link) only works on the
-            client, and Next requires a Suspense boundary around it so the
-            rest of this page can still be statically exported. */}
-        <Suspense fallback={null}>
-          <VideoIndexClient videos={rest.map(toVideoSummary)} categories={VIDEO_CATEGORIES} />
-        </Suspense>
+        <VideoIndexClient videos={rest.map(toVideoSummary)} categories={VIDEO_CATEGORIES} />
       </Section>
     </div>
   );

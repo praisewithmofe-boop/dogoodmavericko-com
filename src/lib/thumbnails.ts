@@ -1,5 +1,6 @@
 import { getYoutubeThumbnail } from "@/lib/youtube";
 import { getGeneratedThumbnailUrl } from "@/lib/generated-thumbnails";
+import { optimizedImageUrl } from "@/lib/images";
 
 // Single source of truth for "which image wins" across the site. Every card,
 // featured block, and detail page resolves its thumbnail through one of
@@ -14,7 +15,7 @@ interface BlogImageInput {
 }
 
 export function resolveBlogImage({ slug, image }: BlogImageInput): string {
-  if (image) return image;
+  if (image) return optimizedImageUrl(image);
   return getGeneratedThumbnailUrl("blog", slug);
 }
 
@@ -28,8 +29,8 @@ interface PodcastImageInput {
 // Priority: dedicated cover art > manually supplied thumbnail > the
 // YouTube frame for the episode's video (if any) > generated title card.
 export function resolvePodcastImage({ slug, coverImage, thumbnail, youtubeId }: PodcastImageInput): string {
-  if (coverImage) return coverImage;
-  if (thumbnail) return thumbnail;
+  if (coverImage) return optimizedImageUrl(coverImage);
+  if (thumbnail) return optimizedImageUrl(thumbnail);
   if (youtubeId) return getYoutubeThumbnail(youtubeId);
   return getGeneratedThumbnailUrl("podcast", slug);
 }
@@ -46,6 +47,6 @@ interface VideoImageInput {
 // generated title card.
 export function resolveVideoImage({ slug, youtubeId, thumbnail }: VideoImageInput): string {
   if (youtubeId) return getYoutubeThumbnail(youtubeId);
-  if (thumbnail) return thumbnail;
+  if (thumbnail) return optimizedImageUrl(thumbnail);
   return getGeneratedThumbnailUrl("videos", slug);
 }

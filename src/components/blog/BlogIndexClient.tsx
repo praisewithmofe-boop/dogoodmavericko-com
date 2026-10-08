@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { ArticleCard } from "@/components/content/ArticleCard";
 import { CtaButton } from "@/components/ui/CtaButton";
 import type { ArticleSummary } from "@/types/content";
@@ -15,13 +14,19 @@ interface BlogIndexClientProps {
 
 export function BlogIndexClient({ articles, categories }: BlogIndexClientProps) {
   // Reads the ?category= deep link (e.g. from the homepage's "Explore by
-  // Topic" pills) on the client — there's no server at request time under
-  // static export to read this for us.
-  const searchParams = useSearchParams();
-  const initialCategory = searchParams.get("category") ?? undefined;
+  // Topic" pills) in the browser. useSyncExternalStore (rather than
+  // useSearchParams) lets the full article grid still be rendered into the
+  // static HTML for search engines; the server snapshot is "no category", and
+  // the browser switches to the real value right after hydration.
+  const urlCategory = useSyncExternalStore(
+    () => () => {},
+    () => new URLSearchParams(window.location.search).get("category"),
+    () => null,
+  );
 
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<string | null>(initialCategory ?? null);
+  const [picked, setPicked] = useState<string | null | undefined>(undefined);
+  const category = picked === undefined ? urlCategory : picked;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const filtered = useMemo(() => {
@@ -36,11 +41,10 @@ export function BlogIndexClient({ articles, categories }: BlogIndexClientProps) 
     });
   }, [articles, query, category]);
 
-  const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
 
   function selectCategory(next: string | null) {
-    setCategory(next);
+    setPicked(next);
     setVisibleCount(PAGE_SIZE);
   }
 
@@ -91,10 +95,14 @@ export function BlogIndexClient({ articles, categories }: BlogIndexClientProps) 
         />
       </div>
 
-      {visible.length > 0 ? (
+      {filtered.length > 0 ? (
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
+          {/* Every match is rendered (so all posts are linked in the page HTML);
+              the ones past the current page are simply hidden until "Load More". */}
+          {filtered.map((article, i) => (
+            <div key={article.slug} className={i < visibleCount ? "contents" : "hidden"}>
+              <ArticleCard article={article} />
+            </div>
           ))}
         </div>
       ) : (

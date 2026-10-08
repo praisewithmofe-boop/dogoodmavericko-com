@@ -6,6 +6,7 @@ import Image from "next/image";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { TERRIFIC30_HERO } from "@/lib/terrific30-content";
 import { HERO_CONTENT } from "@/lib/home-content";
+import { optimizedImageUrl } from "@/lib/images";
 
 export function TerrificHero() {
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
@@ -22,10 +23,11 @@ export function TerrificHero() {
   return (
     <section className="relative flex min-h-[85vh] w-full items-center overflow-hidden">
       <Image
-        src={HERO_CONTENT.image}
+        src={optimizedImageUrl(HERO_CONTENT.image)}
         alt="An open mountain road through the Vikafjellet valley in Norway"
         fill
         priority
+        fetchPriority="high"
         sizes="100vw"
         className="object-cover object-center"
       />

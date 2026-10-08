@@ -2,15 +2,17 @@ import Image from "next/image";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { HERO_CONTENT } from "@/lib/home-content";
+import { optimizedImageUrl } from "@/lib/images";
 
 export function Hero() {
   return (
     <section className="relative min-h-[680px] w-full overflow-hidden lg:aspect-[16/9] lg:min-h-0">
       <Image
-        src={HERO_CONTENT.image}
+        src={optimizedImageUrl(HERO_CONTENT.image)}
         alt="Dogood Mavericko standing on an open mountain road through the Vikafjellet valley in Norway"
         fill
         priority
+        fetchPriority="high"
         sizes="100vw"
         className="object-cover object-center"
       />

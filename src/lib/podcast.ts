@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { formatDate } from "@/lib/format";
+import { slugFromFilename } from "@/lib/slug";
 import { extractYoutubeId } from "@/lib/youtube";
 import { resolvePodcastImage } from "@/lib/thumbnails";
 import type { PodcastEpisode, PodcastEpisodeMeta, PodcastEpisodeSummary } from "@/types/content";
@@ -9,7 +10,7 @@ import type { PodcastEpisode, PodcastEpisodeMeta, PodcastEpisodeSummary } from "
 const PODCAST_DIR = path.join(process.cwd(), "content", "podcast");
 
 function readEpisodeFile(filename: string): PodcastEpisode {
-  const slug = filename.replace(/\.mdx?$/, "");
+  const slug = slugFromFilename(filename);
   const raw = fs.readFileSync(path.join(PODCAST_DIR, filename), "utf8");
   const { data, content } = matter(raw);
 
@@ -44,9 +45,10 @@ export function getAllEpisodes(): PodcastEpisode[] {
 }
 
 export function getEpisodeBySlug(slug: string): PodcastEpisode | undefined {
-  const filePath = path.join(PODCAST_DIR, `${slug}.mdx`);
-  if (!fs.existsSync(filePath)) return undefined;
-  return readEpisodeFile(`${slug}.mdx`);
+  const filename = fs
+    .readdirSync(PODCAST_DIR)
+    .find((name) => name.endsWith(".mdx") && slugFromFilename(name) === slug);
+  return filename ? readEpisodeFile(filename) : undefined;
 }
 
 export function getRelatedEpisodes(episode: PodcastEpisode, count = 3): PodcastEpisode[] {

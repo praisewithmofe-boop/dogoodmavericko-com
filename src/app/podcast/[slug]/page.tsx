@@ -14,6 +14,11 @@ import { proseComponents } from "@/components/content/ArticleProse";
 import { getAllEpisodes, getEpisodeBySlug, getRelatedEpisodes, toEpisodeSummary } from "@/lib/podcast";
 import { resolvePodcastImage } from "@/lib/thumbnails";
 import { formatDate } from "@/lib/format";
+import { PODCAST_NAME } from "@/lib/constants";
+import { buildMetadata } from "@/lib/seo";
+import { getOgImagePath } from "@/lib/og-images";
+import { podcastEpisodeLd, breadcrumbLd } from "@/lib/structured-data";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 interface EpisodePageProps {
   params: Promise<{ slug: string }>;
@@ -28,15 +33,14 @@ export async function generateMetadata({ params }: EpisodePageProps): Promise<Me
   const episode = getEpisodeBySlug(slug);
   if (!episode) return {};
 
-  const title = `${episode.title} — Dogood Mavericko`;
-  const image = encodeURI(resolvePodcastImage(episode));
-
-  return {
-    title,
+  return buildMetadata({
+    title: episode.title,
     description: episode.excerpt,
-    openGraph: { title, description: episode.excerpt, images: [image] },
-    twitter: { card: "summary_large_image", title, description: episode.excerpt, images: [image] },
-  };
+    path: `/podcast/${episode.slug}`,
+    image: getOgImagePath("podcast", episode.slug),
+    imageAlt: `${episode.title} — ${PODCAST_NAME}`,
+    article: { publishedTime: episode.publishedAt, section: "Podcast" },
+  });
 }
 
 export default async function EpisodePage({ params }: EpisodePageProps) {
@@ -48,6 +52,14 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
 
   return (
     <article className="flex flex-col">
+      <JsonLd data={podcastEpisodeLd(episode, getOgImagePath("podcast", episode.slug))} />
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Podcast", path: "/podcast" },
+          { name: episode.title, path: `/podcast/${episode.slug}` },
+        ])}
+      />
       <Section tone="paper">
         <div className="mx-auto flex max-w-prose flex-col gap-5">
           <span className="text-meta font-semibold uppercase tracking-[0.04em] text-gold-dark">

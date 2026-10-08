@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+import { getPageOgImagePath } from "@/lib/og-images";
 import { Section, PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -6,6 +9,15 @@ import { PodcastCard } from "@/components/content/PodcastCard";
 import { VideoCard } from "@/components/content/VideoCard";
 import { NewsletterSignup } from "@/components/conversion/NewsletterSignup";
 import type { ArticleSummary, PodcastEpisodeSummary, VideoSummary } from "@/types/content";
+
+// Internal design-system reference — not meant to appear in search results.
+export const metadata: Metadata = buildMetadata({
+  title: "Style Guide",
+  description: "Internal design-system reference for the Dogood Mavericko website.",
+  path: "/style-guide",
+  image: getPageOgImagePath("home"),
+  noindex: true,
+});
 
 const articles: ArticleSummary[] = [
   {
@@ -86,6 +98,7 @@ export default function StyleGuidePage() {
     <div className="flex flex-col">
       <Section tone="paper" className="pb-12 md:pb-12">
         <SectionHeading
+          as="h1"
           eyebrow="Internal only"
           title="Design system &amp; component style guide"
           description="A living reference for every reusable primitive in the Dogood Mavericko design system — colors, type, buttons, cards, and site chrome. Not a real page."

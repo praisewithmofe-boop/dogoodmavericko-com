@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+import { getPageOgImagePath } from "@/lib/og-images";
 import { Section } from "@/components/layout/PageContainer";
 import { TerrificHero } from "@/components/terrific30/TerrificHero";
 import { WhatItIs } from "@/components/terrific30/WhatItIs";
@@ -9,11 +11,12 @@ import { WhyFree } from "@/components/terrific30/WhyFree";
 import { Terrific30OptIn } from "@/components/home/Terrific30OptIn";
 import { CLOSING_CTA } from "@/lib/terrific30-content";
 
-export const metadata: Metadata = {
-  title: "Terrific 30 — Dogood Mavericko",
-  description:
-    "A free online community for people who want to explore entrepreneurship, modern moneymaking, freedom, and building an online lifestyle business.",
-};
+export const metadata: Metadata = buildMetadata({
+  title: "Terrific 30",
+  description: "A free online community for people who want to explore entrepreneurship, modern moneymaking, freedom, and building an online lifestyle business.",
+  path: "/terrific-30",
+  image: getPageOgImagePath("terrific-30"),
+});
 
 export default function Terrific30Page() {
   return (

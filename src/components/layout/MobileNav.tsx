@@ -37,6 +37,7 @@ export function MobileNav({ isOpen, onClose, onOpenSearch }: MobileNavProps) {
       role="dialog"
       aria-modal="true"
       aria-hidden={!isOpen}
+      inert={!isOpen}
     >
       <div
         className={`flex h-full flex-col justify-between px-6 pt-28 pb-10 transition-transform duration-300 ${
@@ -79,7 +80,7 @@ export function MobileNav({ isOpen, onClose, onOpenSearch }: MobileNavProps) {
             {PRIMARY_CTA.label}
           </CtaButton>
 
-          <div className="flex items-center justify-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
             {SOCIAL_LINKS.map((social) => (
               <a
                 key={social.label}

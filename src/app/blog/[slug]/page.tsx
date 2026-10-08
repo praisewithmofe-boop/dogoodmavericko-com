@@ -12,6 +12,10 @@ import { proseComponents } from "@/components/content/ArticleProse";
 import { getAllPosts, getPostBySlug, getRelatedPosts, toArticleSummary } from "@/lib/content";
 import { resolveBlogImage } from "@/lib/thumbnails";
 import { formatDate } from "@/lib/format";
+import { buildMetadata } from "@/lib/seo";
+import { getOgImagePath } from "@/lib/og-images";
+import { blogPostingLd, breadcrumbLd } from "@/lib/structured-data";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -26,15 +30,18 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const post = getPostBySlug(slug);
   if (!post) return {};
 
-    const title = `${post.title} — Dogood Mavericko`;
-  const image = encodeURI(resolveBlogImage(post));
-
-  return {
-    title,
+  return buildMetadata({
+    title: post.title,
     description: post.excerpt,
-    openGraph: { title, description: post.excerpt, images: [image] },
-    twitter: { card: "summary_large_image", title, description: post.excerpt, images: [image] },
-  };
+    path: `/blog/${post.slug}`,
+    image: getOgImagePath("blog", post.slug),
+    imageAlt: post.title,
+    article: {
+      publishedTime: post.publishedAt,
+      modifiedTime: post.updatedAt ?? post.publishedAt,
+      section: post.category,
+    },
+  });
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
@@ -46,6 +53,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <article className="flex flex-col">
+      <JsonLd data={blogPostingLd(post, getOgImagePath("blog", post.slug))} />
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+          { name: post.title, path: `/blog/${post.slug}` },
+        ])}
+      />
       <Section tone="paper">
         <div className="mx-auto flex max-w-prose flex-col gap-5">
           <span className="text-meta font-semibold uppercase tracking-[0.04em] text-gold-dark">

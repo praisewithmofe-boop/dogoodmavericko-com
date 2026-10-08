@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/generate-thumbnails.mjs && node scripts/generate-search-index.mjs",
+    "predev": "npm run prepare:assets",
     "dev": "next dev",
-    "prebuild": "node scripts/generate-thumbnails.mjs && node scripts/generate-search-index.mjs",
+    "prebuild": "npm run prepare:assets",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seo:audit": "node scripts/seo-audit.mjs",
+    "prepare:assets": "node scripts/generate-thumbnails.mjs && node scripts/optimize-images.mjs && node scripts/generate-og-images.mjs && node scripts/generate-search-index.mjs"
   },
   "dependencies": {
     "fuse.js": "^7.5.0",
@@ -26,6 +28,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.11",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

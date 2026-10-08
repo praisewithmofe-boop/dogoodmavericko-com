@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+import { getPageOgImagePath } from "@/lib/og-images";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Section, PageContainer } from "@/components/layout/PageContainer";
 import { proseComponents } from "@/components/content/ArticleProse";
 import { TERMS_CONTENT, LEGAL_CONTACT_EMAIL, LEGAL_LAST_UPDATED } from "@/lib/legal-content";
 
-export const metadata: Metadata = {
-  title: "Terms & Conditions — Dogood Mavericko",
+export const metadata: Metadata = buildMetadata({
+  title: "Terms & Conditions",
   description: "The terms and conditions for using the Dogood Mavericko website.",
-};
+  path: "/terms",
+  image: getPageOgImagePath("terms"),
+});
 
 export default function TermsPage() {
   return (

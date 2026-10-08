@@ -45,7 +45,7 @@ export function SiteFooter() {
 
         <div className="mt-16 flex flex-col items-center gap-5 border-t border-border-dark pt-12 text-center">
           <div className="flex flex-col gap-2">
-            <h3 className="text-h3 font-semibold text-bone">Follow Dogood Mavericko</h3>
+            <h2 className="text-h3 font-semibold text-bone">Follow Dogood Mavericko</h2>
             <p className="max-w-md text-body text-fog">
               Follow along for more on faith, freedom, entrepreneurship, online business, and
               lifestyle design.
@@ -59,7 +59,7 @@ export function SiteFooter() {
             © {year} Dogood Mavericko. All rights reserved.
           </span>
 
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             {SOCIAL_LINKS.map((social) => (
               <a
                 key={social.label}

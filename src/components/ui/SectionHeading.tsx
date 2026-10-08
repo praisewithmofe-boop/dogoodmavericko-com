@@ -5,6 +5,8 @@ interface SectionHeadingProps {
   align?: "left" | "center";
   tone?: "light" | "dark";
   className?: string;
+  // Index pages use the heading as their page title, so they render it as <h1>.
+  as?: "h1" | "h2";
 }
 
 export function SectionHeading({
@@ -14,6 +16,7 @@ export function SectionHeading({
   align = "left",
   tone = "light",
   className = "",
+  as: Heading = "h2",
 }: SectionHeadingProps) {
   const alignClass = align === "center" ? "items-center text-center mx-auto" : "items-start text-left";
   const titleColor = tone === "dark" ? "text-bone" : "text-charcoal";
@@ -27,7 +30,7 @@ export function SectionHeading({
           {eyebrow}
         </span>
       ) : null}
-      <h2 className={`text-h2 font-semibold ${titleColor}`}>{title}</h2>
+      <Heading className={`text-h2 font-semibold ${titleColor}`}>{title}</Heading>
       {description ? (
         <p className={`text-body-lg max-w-2xl ${descColor}`}>{description}</p>
       ) : null}

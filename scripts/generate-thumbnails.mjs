@@ -11,10 +11,11 @@
 // plain ESM resolution (outside Next's own bundler) needs the real file
 // path to find it.
 import { ImageResponse } from "next/og.js";
-import React from "react";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { titleCard } from "./lib/title-card.mjs";
+import { slugifyFilename } from "./lib/slug.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const CONTENT_TYPES = [
@@ -26,58 +27,13 @@ const CONTENT_TYPES = [
 const WIDTH = 1280;
 const HEIGHT = 720;
 
-function card(title) {
-  return React.createElement(
-    "div",
-    {
-      style: {
-        width: `${WIDTH}px`,
-        height: `${HEIGHT}px`,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        backgroundColor: "#0b0b0a",
-        padding: "88px",
-      },
-    },
-    React.createElement(
-      "div",
-      {
-        style: {
-          color: "#c69a3c",
-          fontSize: 26,
-          letterSpacing: 4,
-          textTransform: "uppercase",
-          display: "flex",
-        },
-      },
-      "Dogood Mavericko"
-    ),
-    React.createElement(
-      "div",
-      {
-        style: {
-          color: "#f4f2ec",
-          fontSize: 58,
-          fontWeight: 700,
-          marginTop: 28,
-          display: "flex",
-          lineHeight: 1.2,
-        },
-      },
-      title
-    )
-  );
-}
-
 async function generateOne(filePath, outDir) {
   const raw = fs.readFileSync(filePath, "utf8");
   const { data } = matter(raw);
-  const slug = path.basename(filePath).replace(/\.mdx?$/, "");
+  const slug = slugifyFilename(path.basename(filePath));
   const title = data.title ?? slug;
 
-  const res = new ImageResponse(card(title), { width: WIDTH, height: HEIGHT });
+  const res = new ImageResponse(titleCard(title, WIDTH, HEIGHT), { width: WIDTH, height: HEIGHT });
   const buf = Buffer.from(await res.arrayBuffer());
 
   fs.mkdirSync(outDir, { recursive: true });

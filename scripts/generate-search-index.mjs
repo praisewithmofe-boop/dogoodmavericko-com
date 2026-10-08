@@ -9,6 +9,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { slugifyFilename } from "./lib/slug.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const CONTENT_TYPES = [
@@ -25,7 +26,7 @@ function readEntries(dir, type, urlPrefix) {
   return files.map((file) => {
     const raw = fs.readFileSync(path.join(absDir, file), "utf8");
     const { data } = matter(raw);
-    const slug = file.replace(/\.mdx?$/, "");
+    const slug = slugifyFilename(file);
 
     return {
       title: data.title ?? slug,

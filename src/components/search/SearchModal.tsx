@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import Fuse from "fuse.js";
+import type Fuse from "fuse.js";
 import type { SearchContentType, SearchIndexEntry } from "@/types/search";
 
 interface SearchModalProps {
@@ -28,15 +28,35 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [index, setIndex] = useState<SearchIndexEntry[] | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Lazy-load the index the first time the modal is opened, not on every
-  // page load.
+  const [fuse, setFuse] = useState<Fuse<SearchIndexEntry> | null>(null);
+
+  // Lazy-load both the search library and the index the first time the modal
+  // is opened, so neither costs anything on normal page loads.
   useEffect(() => {
-    if (!isOpen || index !== null) return;
-    fetch("/search-index.json")
-      .then((res) => res.json())
-      .then((data: SearchIndexEntry[]) => setIndex(data))
-      .catch(() => setIndex([]));
-  }, [isOpen, index]);
+    if (!isOpen || fuse) return;
+    let cancelled = false;
+    Promise.all([import("fuse.js"), fetch("/search-index.json").then((res) => res.json())])
+      .then(([{ default: FuseLib }, data]: [typeof import("fuse.js"), SearchIndexEntry[]]) => {
+        if (cancelled) return;
+        setIndex(data);
+        setFuse(
+          new FuseLib(data, {
+            keys: [
+              { name: "title", weight: 0.7 },
+              { name: "excerpt", weight: 0.3 },
+            ],
+            threshold: 0.35,
+            ignoreLocation: true,
+          }),
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setIndex([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, fuse]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -63,18 +83,6 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     return () => clearTimeout(timeout);
   }, [isOpen]);
 
-  const fuse = useMemo(() => {
-    if (!index) return null;
-    return new Fuse(index, {
-      keys: [
-        { name: "title", weight: 0.7 },
-        { name: "excerpt", weight: 0.3 },
-      ],
-      threshold: 0.35,
-      ignoreLocation: true,
-    });
-  }, [index]);
-
   const results = useMemo(() => {
     if (!fuse || query.trim() === "") return [];
     return fuse.search(query).slice(0, MAX_RESULTS).map((r) => r.item);
@@ -92,6 +100,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       aria-modal="true"
       aria-label="Search"
       aria-hidden={!isOpen}
+      inert={!isOpen}
     >
       <div className="w-full max-w-xl border border-border-dark bg-ink-soft">
         <div className="flex items-center gap-3 border-b border-border-dark px-5 py-4">

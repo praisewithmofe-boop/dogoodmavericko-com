@@ -11,7 +11,10 @@ import { Terrific30OptIn } from "@/components/home/Terrific30OptIn";
 import { proseComponents } from "@/components/content/ArticleProse";
 import { getAllVideos, getVideoBySlug, getRelatedVideos, toVideoSummary } from "@/lib/videos";
 import { getAllPosts, toArticleSummary } from "@/lib/content";
-import { resolveVideoImage } from "@/lib/thumbnails";
+import { buildMetadata } from "@/lib/seo";
+import { getOgImagePath } from "@/lib/og-images";
+import { videoObjectLd, breadcrumbLd } from "@/lib/structured-data";
+import { JsonLd } from "@/components/seo/JsonLd";
 function formatDate(date: string | Date) {
   return new Date(date).toLocaleDateString("en-US", {
     year: "numeric",
@@ -33,15 +36,14 @@ export async function generateMetadata({ params }: VideoPageProps): Promise<Meta
   const video = getVideoBySlug(slug);
   if (!video) return {};
 
-   const title = `${video.title} — Dogood Mavericko`;
-  const image = encodeURI(resolveVideoImage(video));
-
-  return {
-    title,
+  return buildMetadata({
+    title: video.title,
     description: video.excerpt,
-    openGraph: { title, description: video.excerpt, images: [image] },
-    twitter: { card: "summary_large_image", title, description: video.excerpt, images: [image] },
-  };
+    path: `/videos/${video.slug}`,
+    image: getOgImagePath("videos", video.slug),
+    imageAlt: video.title,
+    article: { publishedTime: video.publishedAt, section: video.category },
+  });
 }
 
 export default async function VideoPage({ params }: VideoPageProps) {
@@ -49,6 +51,7 @@ export default async function VideoPage({ params }: VideoPageProps) {
   const video = getVideoBySlug(slug);
   if (!video) notFound();
 
+  const videoLd = videoObjectLd(video, getOgImagePath("videos", video.slug));
   const relatedVideos = getRelatedVideos(video).map(toVideoSummary);
   const relatedPosts = getAllPosts()
     .filter((post) => post.category === video.category)
@@ -57,6 +60,14 @@ export default async function VideoPage({ params }: VideoPageProps) {
 
   return (
     <article className="flex flex-col">
+      {videoLd ? <JsonLd data={videoLd} /> : null}
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Videos", path: "/videos" },
+          { name: video.title, path: `/videos/${video.slug}` },
+        ])}
+      />
       <Section tone="paper">
         <div className="mx-auto flex max-w-prose flex-col gap-5">
           <span className="text-meta font-semibold uppercase tracking-[0.04em] text-gold-dark">

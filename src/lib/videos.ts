@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { formatDate } from "@/lib/format";
+import { slugFromFilename } from "@/lib/slug";
 import { extractYoutubeId } from "@/lib/youtube";
 import { resolveVideoImage } from "@/lib/thumbnails";
 import type { Video, VideoMeta, VideoSummary } from "@/types/content";
@@ -9,7 +10,7 @@ import type { Video, VideoMeta, VideoSummary } from "@/types/content";
 const VIDEOS_DIR = path.join(process.cwd(), "content", "videos");
 
 function readVideoFile(filename: string): Video {
-  const slug = filename.replace(/\.mdx?$/, "");
+  const slug = slugFromFilename(filename);
   const raw = fs.readFileSync(path.join(VIDEOS_DIR, filename), "utf8");
   const { data, content } = matter(raw);
 
@@ -39,9 +40,10 @@ export function getAllVideos(): Video[] {
 }
 
 export function getVideoBySlug(slug: string): Video | undefined {
-  const filePath = path.join(VIDEOS_DIR, `${slug}.mdx`);
-  if (!fs.existsSync(filePath)) return undefined;
-  return readVideoFile(`${slug}.mdx`);
+  const filename = fs
+    .readdirSync(VIDEOS_DIR)
+    .find((name) => name.endsWith(".mdx") && slugFromFilename(name) === slug);
+  return filename ? readVideoFile(filename) : undefined;
 }
 
 export function getRelatedVideos(video: Video, count = 3): Video[] {

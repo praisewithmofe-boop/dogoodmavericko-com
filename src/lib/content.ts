@@ -2,12 +2,13 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { calculateReadTime, formatDate } from "@/lib/format";
+import { slugFromFilename } from "@/lib/slug";
 import type { ArticleSummary, BlogPost, BlogPostMeta } from "@/types/content";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
 function readPostFile(filename: string): BlogPost {
-  const slug = filename.replace(/\.mdx?$/, "");
+  const slug = slugFromFilename(filename);
   const raw = fs.readFileSync(path.join(BLOG_DIR, filename), "utf8");
   const { data, content } = matter(raw);
 
@@ -36,9 +37,10 @@ export function getAllPosts(): BlogPost[] {
 }
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
-  const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
-  if (!fs.existsSync(filePath)) return undefined;
-  return readPostFile(`${slug}.mdx`);
+  const filename = fs
+    .readdirSync(BLOG_DIR)
+    .find((name) => name.endsWith(".mdx") && slugFromFilename(name) === slug);
+  return filename ? readPostFile(filename) : undefined;
 }
 
 export function getRelatedPosts(post: BlogPost, count = 3): BlogPost[] {
