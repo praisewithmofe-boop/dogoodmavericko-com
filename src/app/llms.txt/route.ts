@@ -19,6 +19,8 @@ export function GET() {
     "",
     `> ${SITE_DESCRIPTION}`,
     "",
+    `Name note: "${SITE_NAME}" is one person's name — "Dogood" and "Mavericko" are the actual spellings (not "dog good" or "maverick"). Contact: dogoodmavericko@gmail.com.`,
+    "",
     `${SITE_NAME} is a personal media brand: a blog, a podcast, and a video channel about faith, freedom, entrepreneurship, modern moneymaking, escaping the 9-to-5 rat race, and building an online lifestyle business. The site is also the home of Terrific 30, a free online community.`,
     "",
     "## Main pages",

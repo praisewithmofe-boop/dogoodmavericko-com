@@ -1,4 +1,4 @@
-import { PODCAST_NAME, SITE_NAME, SOCIAL_LINKS } from "@/lib/constants";
+import { PODCAST_NAME, PODCAST_PLATFORMS, SITE_NAME, SOCIAL_LINKS } from "@/lib/constants";
 import { SITE_DESCRIPTION, SITE_URL, absoluteUrl, canonicalUrl } from "@/lib/seo";
 import type { BlogPost, PodcastEpisode, Video } from "@/types/content";
 
@@ -11,7 +11,19 @@ const logo = {
   height: 512,
 };
 
-const sameAs = SOCIAL_LINKS.map((s) => s.href);
+// Every official profile, so search engines and AI assistants can tell they
+// are all the same person/brand. Podcast listings are included.
+const sameAs = [
+  ...new Set([
+    ...SOCIAL_LINKS.map((s) => s.href),
+    ...PODCAST_PLATFORMS.map((p) => p.href),
+    "https://creators.spotify.com/pod/profile/dogood-mavericko/",
+  ]),
+];
+
+const SITE_EMAIL = "dogoodmavericko@gmail.com";
+const PERSON_DESCRIPTION =
+  "Dogood Mavericko is a writer, podcaster, and entrepreneur sharing ideas on faith, freedom, entrepreneurship, escaping the 9-to-5 rat race, modern moneymaking, and building an online lifestyle business. Host of The Dogood Mavericko Podcast and home of the free Terrific 30 community.";
 
 const author = {
   "@type": "Person",
@@ -39,6 +51,28 @@ export function siteLd() {
         url: `${SITE_URL}/`,
         logo,
         description: SITE_DESCRIPTION,
+        email: SITE_EMAIL,
+        founder: { "@id": `${SITE_URL}/#person` },
+        sameAs,
+      },
+      {
+        "@type": "Person",
+        "@id": `${SITE_URL}/#person`,
+        name: SITE_NAME,
+        url: canonicalUrl("/about"),
+        mainEntityOfPage: `${SITE_URL}/`,
+        jobTitle: "Writer, Podcaster and Entrepreneur",
+        description: PERSON_DESCRIPTION,
+        email: SITE_EMAIL,
+        image: absoluteUrl("/generated/img/img-0246.webp"),
+        knowsAbout: [
+          "Faith",
+          "Freedom",
+          "Entrepreneurship",
+          "Modern moneymaking",
+          "Online lifestyle business",
+          "Escaping the 9-to-5 rat race",
+        ],
         sameAs,
       },
       {
@@ -49,6 +83,15 @@ export function siteLd() {
         description: SITE_DESCRIPTION,
         inLanguage: "en-US",
         publisher: { "@id": `${SITE_URL}/#organization` },
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://terrific30.com/#organization",
+        name: "Terrific 30",
+        url: "https://terrific30.com/",
+        description:
+          "A free online community for people who want to explore entrepreneurship, modern moneymaking, freedom, and building an online lifestyle business.",
+        founder: { "@id": `${SITE_URL}/#person` },
       },
     ],
   };
