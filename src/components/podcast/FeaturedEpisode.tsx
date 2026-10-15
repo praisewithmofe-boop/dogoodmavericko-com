@@ -3,6 +3,7 @@ import { Section } from "@/components/layout/PageContainer";
 import { ContentThumbnail } from "@/components/ui/ContentThumbnail";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { AudioPlayer } from "@/components/podcast/AudioPlayer";
+import { SpotifyListenLink } from "@/components/podcast/SpotifyListenLink";
 import { resolvePodcastImage } from "@/lib/thumbnails";
 import { formatDate } from "@/lib/format";
 import type { PodcastEpisodeMeta } from "@/types/content";
@@ -45,8 +46,9 @@ export function FeaturedEpisode({ episode }: FeaturedEpisodeProps) {
             <span>{episode.duration}</span>
           </div>
 
-          <div className="mt-2">
+          <div className="mt-2 flex flex-col items-start gap-4">
             <AudioPlayer audioUrl={episode.audioUrl} />
+            <SpotifyListenLink spotifyUrl={episode.spotifyUrl} />
           </div>
 
           <div className="mt-2">

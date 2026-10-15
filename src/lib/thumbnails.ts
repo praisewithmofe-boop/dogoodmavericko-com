@@ -26,12 +26,12 @@ interface PodcastImageInput {
   youtubeId?: string;
 }
 
-// Priority: dedicated cover art > manually supplied thumbnail > the
-// YouTube frame for the episode's video (if any) > generated title card.
+// Priority: the YouTube frame when the episode has a video id, otherwise the
+// episode artwork (cover, then a manual thumbnail), then the generated title card.
 export function resolvePodcastImage({ slug, coverImage, thumbnail, youtubeId }: PodcastImageInput): string {
+  if (youtubeId) return getYoutubeThumbnail(youtubeId);
   if (coverImage) return optimizedImageUrl(coverImage);
   if (thumbnail) return optimizedImageUrl(thumbnail);
-  if (youtubeId) return getYoutubeThumbnail(youtubeId);
   return getGeneratedThumbnailUrl("podcast", slug);
 }
 

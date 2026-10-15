@@ -48,8 +48,8 @@ export interface PodcastEpisodeMeta {
   duration: string;
   publishedAt: string; // ISO 8601
   guest?: string;
-  // Image priority: coverImage > thumbnail > the YouTube video's own frame
-  // (derived from youtubeId/youtubeUrl) > generic fallback. See lib/thumbnails.ts.
+  // Image priority: the YouTube frame when a video id is present, otherwise
+  // coverImage, then thumbnail, then the generated title card. See lib/thumbnails.ts.
   coverImage?: string;
   thumbnail?: string;
   audioUrl?: string;
@@ -57,10 +57,8 @@ export interface PodcastEpisodeMeta {
   // Alternative to youtubeId — a full YouTube URL, parsed into an ID at load
   // time (lib/youtube.ts#extractYoutubeId). Set either one.
   youtubeUrl?: string;
-  // Per-episode platform links, for when an episode has its own deep link
-  // (e.g. a specific Spotify episode) rather than just the show's home page.
-  // Optional and not yet populated for any episode — the site currently
-  // falls back to the show-wide PODCAST_PLATFORMS links.
+  // Per-episode platform links. The listen link uses spotifyUrl when set
+  // and otherwise the show-wide Spotify URL in PODCAST_PLATFORMS.
   spotifyUrl?: string;
   applePodcastsUrl?: string;
   rumbleUrl?: string;

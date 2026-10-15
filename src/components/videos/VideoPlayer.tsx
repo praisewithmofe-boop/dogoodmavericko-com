@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { PlayIcon } from "@/components/content/VideoThumbnail";
-import { getYoutubeEmbedUrl } from "@/lib/youtube";
+import { getYoutubeEmbedUrl, getYoutubeWatchUrl } from "@/lib/youtube";
 import { resolveVideoImage } from "@/lib/thumbnails";
 
 interface VideoPlayerProps {
@@ -13,14 +13,24 @@ interface VideoPlayerProps {
 export function VideoPlayer({ slug, youtubeId, thumbnail, title }: VideoPlayerProps) {
   if (youtubeId) {
     return (
-      <div className="aspect-video w-full overflow-hidden bg-ink">
-        <iframe
-          src={getYoutubeEmbedUrl(youtubeId)}
-          title={title}
-          className="h-full w-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
+      <div className="flex w-full flex-col items-start gap-4">
+        <div className="aspect-video w-full overflow-hidden bg-ink">
+          <iframe
+            src={getYoutubeEmbedUrl(youtubeId)}
+            title={title}
+            className="h-full w-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+        <a
+          href={getYoutubeWatchUrl(youtubeId)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-button font-medium uppercase tracking-[0.02em] text-gold-dark underline underline-offset-4 transition-colors hover:text-gold"
+        >
+          Watch on YouTube
+        </a>
       </div>
     );
   }
