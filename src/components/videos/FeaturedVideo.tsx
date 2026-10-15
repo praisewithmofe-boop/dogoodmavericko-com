@@ -30,8 +30,12 @@ export function FeaturedVideo({ video }: FeaturedVideoProps) {
         <p className="max-w-prose text-body-lg text-slate">{video.excerpt}</p>
         <div className="flex items-center gap-3 text-meta uppercase tracking-[0.04em] text-slate">
           <span>{formatDate(video.publishedAt)}</span>
-          <span aria-hidden="true">·</span>
-          <span>{video.duration}</span>
+          {video.duration ? (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{video.duration}</span>
+            </>
+          ) : null}
         </div>
         <div className="mt-2">
           <CtaButton href={`/videos/${video.slug}`} variant="secondary" size="md">

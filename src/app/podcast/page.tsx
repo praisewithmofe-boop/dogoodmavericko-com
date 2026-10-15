@@ -7,7 +7,7 @@ import { FeaturedEpisode } from "@/components/podcast/FeaturedEpisode";
 import { PlatformLinks } from "@/components/podcast/PlatformLinks";
 import { PodcastIndexClient } from "@/components/podcast/PodcastIndexClient";
 import { getAllEpisodes, toEpisodeSummary } from "@/lib/podcast";
-import { PODCAST_NAME } from "@/lib/constants";
+import { CONTENT_INDEX_LIMIT, PODCAST_NAME } from "@/lib/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "Podcast",
@@ -17,7 +17,7 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default function PodcastPage() {
-  const episodes = getAllEpisodes();
+  const episodes = getAllEpisodes().slice(0, CONTENT_INDEX_LIMIT);
   const [featured, ...rest] = episodes;
 
   return (
