@@ -1,0 +1,10 @@
+name = "ghl-optin"
+main = "src/index.ts"
+compatibility_date = "2026-10-15"
+workers_dev = true
+
+# Public location id for the Dogood Mavericko sub-account.
+# Override by changing this value. The private integration token is NOT stored
+# here — set the Worker secret GHL_PRIVATE_INTEGRATION_TOKEN.
+[vars]
+GHL_LOCATION_ID = "B61Axi1jMZDmpwTLX4tR"

@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local `npx wrangler dev`. Never commit .dev.vars.
+# GHL_LOCATION_ID is already set in wrangler.toml.
+GHL_PRIVATE_INTEGRATION_TOKEN=

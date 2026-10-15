@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:worker": "node --experimental-strip-types --test workers/ghl-optin/src/index.test.ts",
     "seo:audit": "node scripts/seo-audit.mjs",
     "content:sync": "node scripts/sync-content.mjs",
     "content:sync:dry": "node scripts/sync-content.mjs --dry-run",
