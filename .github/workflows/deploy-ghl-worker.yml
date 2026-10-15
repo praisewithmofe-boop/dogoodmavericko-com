@@ -5,7 +5,11 @@ name: Deploy GHL opt-in worker
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    # workflow_dispatch is hidden until this file is on main, so pushes to the
+    # open pull-request branch deploy the Worker before merge.
+    branches:
+      - main
+      - cursor/ghl-optin-worker-89d9
     paths:
       - "workers/ghl-optin/**"
       - ".github/workflows/deploy-ghl-worker.yml"
