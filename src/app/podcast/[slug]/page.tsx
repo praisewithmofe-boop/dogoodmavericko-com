@@ -5,6 +5,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { Section, PageContainer } from "@/components/layout/PageContainer";
 import { ContentThumbnail } from "@/components/ui/ContentThumbnail";
 import { AudioPlayer } from "@/components/podcast/AudioPlayer";
+import { SpotifyListenLink } from "@/components/podcast/SpotifyListenLink";
 import { VideoEmbed } from "@/components/podcast/VideoEmbed";
 import { PlatformLinks } from "@/components/podcast/PlatformLinks";
 import { PodcastCard } from "@/components/content/PodcastCard";
@@ -93,6 +94,7 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
       <PageContainer className="mb-16">
         <div className="mx-auto flex max-w-prose flex-col gap-4">
           <AudioPlayer audioUrl={episode.audioUrl} />
+          <SpotifyListenLink spotifyUrl={episode.spotifyUrl} />
           <h2 className="text-h3 font-semibold text-charcoal">Listen / Watch On</h2>
           <PlatformLinks />
         </div>
