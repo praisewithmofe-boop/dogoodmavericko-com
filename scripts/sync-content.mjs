@@ -12,6 +12,9 @@
 // The YouTube feed only lists the latest 15 uploads. A run every few hours
 // keeps up with about five uploads a day. A gap longer than that can miss
 // a video once it falls off the feed.
+//
+// Podcast episodes are added only when they were published after the newest
+// episode already on the site. Older RSS episodes are never backfilled.
 
 import fs from "fs";
 import path from "path";
@@ -201,6 +204,7 @@ function loadExisting() {
   const slugs = new Set();
   const seoTitles = new Map();
   const seoDescriptions = new Map();
+  let newestPodcastPublished = "";
 
   function rememberSeo(title, description, source, exact = false) {
     const seo = pageTitle(title, exact);
@@ -230,10 +234,25 @@ function loadExisting() {
       if (audio) audioUrls.add(audio);
       const spotify = readQuoted(raw, "spotifyUrl");
       if (spotify) episodeKeys.add(episodeKey(spotify));
+      if (dir === PODCAST_DIR) {
+        const published = readQuoted(raw, "publishedAt");
+        if (!published) fail(`Podcast file ${name} is missing publishedAt`);
+        const iso = toIso(published);
+        if (iso > newestPodcastPublished) newestPodcastPublished = iso;
+      }
     }
   }
 
-  return { titles, videoIds, audioUrls, episodeKeys, slugs, seoTitles, seoDescriptions };
+  return {
+    titles,
+    videoIds,
+    audioUrls,
+    episodeKeys,
+    slugs,
+    seoTitles,
+    seoDescriptions,
+    newestPodcastPublished,
+  };
 }
 
 function youtubeIdFrom(url) {
@@ -418,6 +437,11 @@ function planEpisodes(episodes, uploads, existing) {
     else if (current.id !== upload.id) youtubeByKey.set(key, null);
   }
 
+  const cutoff = existing.newestPodcastPublished;
+  if (!cutoff) {
+    fail("No podcast episodes are on the site, so there is no cutoff. Refusing to add older RSS episodes.");
+  }
+
   const planned = [];
   const skipped = [];
   const ordered = [...episodes].sort((a, b) => a.published.localeCompare(b.published));
@@ -427,6 +451,13 @@ function planEpisodes(episodes, uploads, existing) {
     const key = episodeKey(episode.link);
     if (existing.audioUrls.has(episode.audioUrl) || existing.episodeKeys.has(key)) {
       skipped.push({ title, reason: "episode is already on the site" });
+      continue;
+    }
+    if (episode.published <= cutoff) {
+      skipped.push({
+        title,
+        reason: `published ${episode.published} is not after the newest episode on the site (${cutoff})`,
+      });
       continue;
     }
     if (existing.titles.has(title.toLowerCase())) {

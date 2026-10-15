@@ -1,6 +1,8 @@
 # Adds new YouTube uploads and podcast episodes, then asks the existing
 # deploy workflow to publish them. A push made with the default GITHUB_TOKEN
 # does not start other workflows, so this run dispatches Deploy afterwards.
+# Podcast episodes are added only when they are newer than the newest episode
+# already on the site. Older RSS episodes are never backfilled.
 name: Sync new videos and podcast episodes
 
 on:
