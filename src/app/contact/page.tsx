@@ -8,7 +8,7 @@ const CONTACT_EMAIL = "dogoodmavericko@gmail.com";
 
 export const metadata: Metadata = buildMetadata({
   title: "Contact Me",
-  description: "Get in touch with Dogood Mavericko.",
+  description: "Contact Dogood Mavericko for podcast guest requests, speaking, collaborations, or questions about Terrific 30. Email dogoodmavericko@gmail.com.",
   path: "/contact",
   image: getPageOgImagePath("contact"),
 });
