@@ -76,8 +76,12 @@ export default async function VideoPage({ params }: VideoPageProps) {
           <h1 className="text-display font-semibold text-charcoal">{video.title}</h1>
           <div className="flex flex-wrap items-center gap-2 text-meta uppercase tracking-[0.04em] text-slate">
             <span>{formatDate(video.publishedAt)}</span>
-            <span aria-hidden="true">·</span>
-            <span>{video.duration}</span>
+            {video.duration ? (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{video.duration}</span>
+              </>
+            ) : null}
           </div>
         </div>
       </Section>

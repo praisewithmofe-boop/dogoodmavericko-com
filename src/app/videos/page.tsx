@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FeaturedVideo } from "@/components/videos/FeaturedVideo";
 import { VideoIndexClient } from "@/components/videos/VideoIndexClient";
 import { getAllVideos, toVideoSummary } from "@/lib/videos";
-import { VIDEO_CATEGORIES } from "@/lib/constants";
+import { CONTENT_INDEX_LIMIT, VIDEO_CATEGORIES } from "@/lib/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "Videos",
@@ -16,7 +16,7 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default function VideosPage() {
-  const videos = getAllVideos();
+  const videos = getAllVideos().slice(0, CONTENT_INDEX_LIMIT);
   const [featured, ...rest] = videos;
 
   return (

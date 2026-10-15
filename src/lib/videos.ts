@@ -19,7 +19,7 @@ function readVideoFile(filename: string): Video {
     title: data.title,
     excerpt: data.excerpt,
     category: data.category,
-    duration: data.duration,
+    duration: data.duration ?? "",
     publishedAt: data.publishedAt,
     youtubeId: data.youtubeId ?? (data.youtubeUrl ? (extractYoutubeId(data.youtubeUrl) ?? undefined) : undefined),
     youtubeUrl: data.youtubeUrl,

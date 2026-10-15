@@ -38,7 +38,8 @@ export function VideoSection() {
             {featured.title}
           </h3>
           <span className="text-meta uppercase tracking-[0.04em] text-slate">
-            {formatDate(featured.publishedAt)} · {featured.duration}
+            {formatDate(featured.publishedAt)}
+            {featured.duration ? ` · ${featured.duration}` : ""}
           </span>
         </div>
       </Link>

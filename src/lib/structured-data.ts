@@ -130,7 +130,8 @@ export function blogPostingLd(post: BlogPost, imagePath: string) {
 }
 
 // "42 min" -> "PT42M"; "1:02:30" or "14:52" -> "PT1H2M30S" / "PT14M52S"
-function isoDuration(duration: string): string | undefined {
+function isoDuration(duration: string | undefined): string | undefined {
+  if (!duration) return undefined;
   const minutes = duration.match(/^(\d+)\s*min/i);
   if (minutes) return `PT${minutes[1]}M`;
   const parts = duration.split(":").map(Number);
