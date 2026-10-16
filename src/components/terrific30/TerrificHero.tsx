@@ -2,14 +2,26 @@
 
 import Image from "next/image";
 import { PageContainer } from "@/components/layout/PageContainer";
+import { TerrificPhoneField } from "@/components/terrific30/TerrificPhoneField";
 import { useTerrific30OptIn } from "@/lib/ghl-optin";
 import { TERRIFIC30_HERO } from "@/lib/terrific30-content";
 import { HERO_CONTENT } from "@/lib/home-content";
 import { optimizedImageUrl } from "@/lib/images";
 
 export function TerrificHero() {
-  const { status, error, firstName, setFirstName, email, setEmail, handleSubmit } =
-    useTerrific30OptIn();
+  const {
+    status,
+    error,
+    firstName,
+    setFirstName,
+    email,
+    setEmail,
+    countryIso,
+    setCountryIso,
+    phone,
+    setPhone,
+    handleSubmit,
+  } = useTerrific30OptIn();
 
   return (
     <section className="relative flex min-h-[85vh] w-full items-center overflow-hidden">
@@ -38,39 +50,51 @@ export function TerrificHero() {
                 You&rsquo;re in. Check your inbox to confirm and get started.
               </p>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
-                <label htmlFor="t30-hero-first-name" className="sr-only">
-                  First name
-                </label>
-                <input
-                  id="t30-hero-first-name"
-                  type="text"
-                  autoComplete="given-name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="First name"
-                  className="w-full border border-bone/30 bg-paper/95 px-4 py-3.5 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-light sm:w-40"
-                />
-                <label htmlFor="t30-hero-email" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  id="t30-hero-email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="w-full border border-bone/30 bg-paper/95 px-4 py-3.5 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-light sm:flex-1"
-                />
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="inline-flex items-center justify-center bg-gold px-6 py-3.5 text-button font-medium tracking-[0.02em] text-ink uppercase whitespace-nowrap transition-colors duration-200 hover:bg-gold-light disabled:opacity-60"
-                >
-                  {status === "loading" ? "Joining…" : TERRIFIC30_HERO.cta}
-                </button>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+                  <label htmlFor="t30-hero-first-name" className="sr-only">
+                    First name
+                  </label>
+                  <input
+                    id="t30-hero-first-name"
+                    type="text"
+                    autoComplete="given-name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="First name"
+                    className="w-full border border-bone/30 bg-paper/95 px-4 py-3.5 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-light sm:w-40"
+                  />
+                  <label htmlFor="t30-hero-email" className="sr-only">
+                    Email address
+                  </label>
+                  <input
+                    id="t30-hero-email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full border border-bone/30 bg-paper/95 px-4 py-3.5 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-light sm:flex-1"
+                  />
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-stretch">
+                  <TerrificPhoneField
+                    idPrefix="t30-hero"
+                    tone="dark"
+                    countryIso={countryIso}
+                    onCountryIso={setCountryIso}
+                    phone={phone}
+                    onPhone={setPhone}
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
+                    className="inline-flex items-center justify-center bg-gold px-6 py-3.5 text-button font-medium tracking-[0.02em] text-ink uppercase whitespace-nowrap transition-colors duration-200 hover:bg-gold-light disabled:opacity-60"
+                  >
+                    {status === "loading" ? "Joining…" : TERRIFIC30_HERO.cta}
+                  </button>
+                </div>
               </form>
             )}
             {status === "error" ? (

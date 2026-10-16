@@ -87,6 +87,12 @@ export function createHandler(deps: HandlerDeps = {}) {
         return json({ ok: false, error: "Enter a valid email address." }, 400, corsOrigin);
       }
 
+      const phoneProvided = typeof record.phone === "string" && record.phone.trim() !== "";
+      const phone = phoneProvided ? cleanPhone(record.phone) : undefined;
+      if (phoneProvided && !phone) {
+        return json({ ok: false, error: "Enter a valid phone number." }, 400, corsOrigin);
+      }
+
       const firstName = cleanName(record.firstName);
       const ip = clientKey(request);
       if (isRateLimited(hits, ip, now())) {
@@ -116,6 +122,7 @@ export function createHandler(deps: HandlerDeps = {}) {
         email,
         source: CONTACT_SOURCE,
       };
+      if (phone) upsertBody.phone = phone;
       if (firstName) upsertBody.firstName = firstName;
 
       let upsert: GhlResult;
@@ -226,6 +233,13 @@ function contactIdFrom(payload: unknown): string | null {
     }
   }
   return null;
+}
+
+function cleanPhone(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const compact = value.trim().replace(/[\s().-]/g, "");
+  if (!/^\+[1-9]\d{7,14}$/.test(compact)) return null;
+  return compact;
 }
 
 function cleanEmail(value: unknown): string | null {
