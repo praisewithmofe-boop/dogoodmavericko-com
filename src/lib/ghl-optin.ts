@@ -6,9 +6,10 @@ import { DEFAULT_COUNTRY_ISO } from "@/lib/dial-codes";
 import { toE164 } from "@/lib/phone";
 
 /**
- * Public relay URL for Terrific 30 signups.
+ * Public relay URL for Terrific 30 and newsletter signups.
  * Set NEXT_PUBLIC_GHL_OPTIN_URL at build time, or paste the workers.dev URL here.
  * This file must only contain that public URL — the GoHighLevel token stays on the Worker.
+ * The Worker chooses the tag from `list`. The browser never sends a tag name.
  */
 export const CONFIGURED_GHL_OPTIN_URL = "";
 
@@ -22,6 +23,12 @@ const GENERIC = "We couldn’t complete your signup. Please try again.";
 
 export type OptInResult = { ok: true } | { ok: false; error: string };
 
+export async function submitNewsletterSignup(input: { email: string }): Promise<OptInResult> {
+  const email = input.email.trim();
+  if (!email) return { ok: false, error: "Enter a valid email address." };
+  return postOptIn({ email, list: "newsletter" });
+}
+
 export async function submitTerrific30OptIn(input: {
   firstName: string;
   email: string;
@@ -32,13 +39,17 @@ export async function submitTerrific30OptIn(input: {
   const phone = input.phone.trim();
   if (!email) return { ok: false, error: "Enter a valid email address." };
   if (!phone) return { ok: false, error: "Enter a valid phone number." };
+  return postOptIn(firstName ? { firstName, email, phone, list: "terrific30" } : { email, phone, list: "terrific30" });
+}
+
+async function postOptIn(body: Record<string, string>): Promise<OptInResult> {
   if (!GHL_OPTIN_URL) return { ok: false, error: UNAVAILABLE };
 
   try {
     const response = await fetch(GHL_OPTIN_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(firstName ? { firstName, email, phone } : { email, phone }),
+      body: JSON.stringify(body),
       cache: "no-store",
     });
 

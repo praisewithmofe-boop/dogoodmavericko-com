@@ -12,6 +12,7 @@ export function PodcastCard({ episode, tone = "light", className = "" }: Podcast
   const titleColor = tone === "dark" ? "text-bone" : "text-charcoal";
   const titleHover = tone === "dark" ? "group-hover:text-gold-light" : "group-hover:text-gold-dark";
   const bodyColor = tone === "dark" ? "text-fog" : "text-slate";
+  const eyebrowColor = tone === "dark" ? "text-gold-light" : "text-gold-dark";
 
   return (
     <Link
@@ -27,7 +28,7 @@ export function PodcastCard({ episode, tone = "light", className = "" }: Podcast
       />
 
       <div className="flex flex-1 flex-col gap-2">
-        <span className="text-meta font-semibold uppercase tracking-[0.04em] text-gold-dark">
+        <span className={`text-meta font-semibold uppercase tracking-[0.04em] ${eyebrowColor}`}>
           Episode {String(episode.episodeNumber).padStart(2, "0")}
         </span>
         <h3 className={`text-h3 font-semibold transition-colors duration-200 ${titleColor} ${titleHover}`}>

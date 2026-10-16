@@ -1,6 +1,12 @@
 const GHL_UPSERT_URL = "https://services.leadconnectorhq.com/contacts/upsert";
 const GHL_API_VERSION = "2021-07-28";
-const CONTACT_TAG = "terrific30-free";
+const LIST_TAGS = {
+  terrific30: "terrific30-free",
+  newsletter: "dogood-newsletter",
+} as const;
+
+type SignupList = keyof typeof LIST_TAGS;
+
 const CONTACT_SOURCE = "dogoodmavericko.com";
 const DEFAULT_LOCATION_ID = "B61Axi1jMZDmpwTLX4tR";
 const PRODUCTION_ORIGIN = "https://dogoodmavericko.com";
@@ -87,7 +93,14 @@ export function createHandler(deps: HandlerDeps = {}) {
         return json({ ok: false, error: "Enter a valid email address." }, 400, corsOrigin);
       }
 
-      const phoneProvided = typeof record.phone === "string" && record.phone.trim() !== "";
+      const list = signupList(record.list);
+      if (!list) {
+        return json({ ok: false, error: "That signup could not be accepted." }, 400, corsOrigin);
+      }
+
+      // Newsletter is email only. A phone on that request is ignored, and a tag
+      // sent by the browser is never trusted — the list name picks the tag here.
+      const phoneProvided = list === "terrific30" && typeof record.phone === "string" && record.phone.trim() !== "";
       const phone = phoneProvided ? cleanPhone(record.phone) : undefined;
       if (phoneProvided && !phone) {
         return json({ ok: false, error: "Enter a valid phone number." }, 400, corsOrigin);
@@ -150,7 +163,7 @@ export function createHandler(deps: HandlerDeps = {}) {
       const tagUrl = `https://services.leadconnectorhq.com/contacts/${contactId}/tags`;
       let tagged: GhlResult;
       try {
-        tagged = await ghlPost(fetchImpl, token, tagUrl, { tags: [CONTACT_TAG] });
+        tagged = await ghlPost(fetchImpl, token, tagUrl, { tags: [LIST_TAGS[list]] });
       } catch (error) {
         console.error(`GoHighLevel tag request failed (${errorName(error)})`);
         return json(
@@ -232,6 +245,12 @@ function contactIdFrom(payload: unknown): string | null {
       return candidate;
     }
   }
+  return null;
+}
+
+function signupList(value: unknown): SignupList | null {
+  if (value === undefined || value === null || value === "") return "terrific30";
+  if (value === "terrific30" || value === "newsletter") return value;
   return null;
 }
 

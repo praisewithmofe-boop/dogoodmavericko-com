@@ -8,8 +8,7 @@ import { canonicalUrl } from "@/lib/seo";
 export const dynamic = "force-static";
 
 // Lists every public page. New posts/episodes/videos are picked up
-// automatically on the next build; draft content and the internal
-// /style-guide page are intentionally left out.
+// automatically on the next build. Draft content is left out.
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts();
   const episodes = getAllEpisodes();

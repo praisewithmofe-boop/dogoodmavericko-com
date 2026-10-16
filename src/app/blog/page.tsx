@@ -18,6 +18,9 @@ export const metadata: Metadata = buildMetadata({
 export default function BlogPage() {
   const posts = getAllPosts();
   const [featured, ...rest] = posts;
+  const categories = BLOG_CATEGORIES.filter((category) =>
+    rest.some((post) => post.category === category),
+  );
 
   return (
     <div className="flex flex-col">
@@ -34,7 +37,7 @@ export default function BlogPage() {
 
       <Section tone="paper-dim">
         <SectionHeading eyebrow="Browse" title="Latest Articles" className="mb-10" />
-        <BlogIndexClient articles={rest.map(toArticleSummary)} categories={BLOG_CATEGORIES} />
+        <BlogIndexClient articles={rest.map(toArticleSummary)} categories={categories} />
       </Section>
     </div>
   );

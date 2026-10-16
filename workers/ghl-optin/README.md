@@ -1,8 +1,13 @@
 # Terrific 30 signup relay
 
-This Cloudflare Worker accepts the Terrific 30 form (`firstName`, `email`, `phone`) and writes the contact in GoHighLevel. `phone` is an E.164 number such as `+12025550123`. The form requires it. A request that leaves it out still succeeds, so an older copy of the page keeps working; a phone that is present must be valid. The private integration token lives only as a Worker secret. The static site never sees it.
+This Cloudflare Worker accepts two signups and writes the contact in GoHighLevel. The private integration token lives only as a Worker secret. The static site never sees it.
 
-The Worker upserts the contact (`locationId`, `firstName`, `email`, `phone`, `source`) and then adds the tag `terrific30-free`. Tags are not sent on the upsert, so existing tags stay in place.
+The browser sends `list: "terrific30"` or `list: "newsletter"`. The Worker picks the tag. A missing `list` is treated as Terrific 30 so an older copy of that form still works. Any other `list` value is rejected. A `tags` field from the browser is ignored.
+
+- `terrific30` adds the tag `terrific30-free`. The form sends `firstName`, `email`, and `phone`. `phone` is an E.164 number such as `+12025550123`. The form requires it. A request that leaves it out still succeeds, so an older copy of the page keeps working; a phone that is present must be valid.
+- `newsletter` adds the tag `dogood-newsletter`. It is email only. A phone on that request is not saved.
+
+The Worker upserts the contact (`locationId`, `firstName`, `email`, `phone`, `source`) and then adds the one tag for that list. Tags are not sent on the upsert, so existing tags stay in place.
 
 Allowed browser origins: `https://dogoodmavericko.com`, plus `http://localhost` and `http://127.0.0.1` (any port) for local testing.
 
@@ -60,7 +65,7 @@ The location id `B61Axi1jMZDmpwTLX4tR` is already set in `wrangler.toml`. You do
 
 That variable is inlined into the static site at build time. It must be the Worker URL only. Never paste the GoHighLevel token into it.
 
-Until this variable is set, both Terrific 30 forms show a short error instead of a fake success. After the Pages deploy finishes, submit a test address you control and confirm the contact in GoHighLevel has the tag `terrific30-free`.
+Until this variable is set, the Terrific 30 forms and the newsletter box show a short error instead of a fake success. After the Pages deploy finishes, submit a test address you control. A Terrific 30 signup should have the tag `terrific30-free`. A newsletter signup should have the tag `dogood-newsletter` and not `terrific30-free`.
 
 If you would rather commit the URL, paste it into `CONFIGURED_GHL_OPTIN_URL` in `src/lib/ghl-optin.ts` and redeploy the site. The GitHub variable overrides that constant when it is set.
 

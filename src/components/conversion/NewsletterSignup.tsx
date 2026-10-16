@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { submitNewsletterSignup } from "@/lib/ghl-optin";
 
 interface NewsletterSignupProps {
   tone?: "light" | "dark";
@@ -18,7 +19,10 @@ export function NewsletterSignup({
   description = "One email a week — faith, freedom, and building a life on your own terms. No noise.",
   className = "",
 }: NewsletterSignupProps) {
-  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+  const inputId = useId();
+  const inFlight = useRef(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [error, setError] = useState("");
   const [email, setEmail] = useState("");
 
   const textColor = tone === "dark" ? "text-bone" : "text-charcoal";
@@ -27,9 +31,20 @@ export function NewsletterSignup({
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!email) return;
+    if (!email || inFlight.current) return;
+    inFlight.current = true;
     setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 600);
+    setError("");
+
+    void submitNewsletterSignup({ email }).then((result) => {
+      inFlight.current = false;
+      if (result.ok) {
+        setStatus("success");
+        return;
+      }
+      setStatus("error");
+      setError(result.error);
+    });
   }
 
   return (
@@ -46,26 +61,34 @@ export function NewsletterSignup({
           You&rsquo;re in. Check your inbox to confirm.
         </p>
       ) : (
-        <form onSubmit={handleSubmit} className="flex w-full max-w-md flex-col gap-3 sm:flex-row">
-          <label htmlFor="newsletter-email" className="sr-only">
-            Email address
-          </label>
-          <input
-            id="newsletter-email"
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className={`w-full border bg-transparent px-4 py-3 text-body outline-none transition-colors ${inputBorder} focus-visible:border-gold-dark`}
-          />
-          <button
-            type="submit"
-            disabled={status === "loading"}
-            className="inline-flex items-center justify-center bg-gold px-6 py-3 text-button font-medium tracking-[0.02em] text-ink uppercase whitespace-nowrap transition-colors duration-200 hover:bg-gold-light disabled:opacity-60"
-          >
-            {status === "loading" ? "Joining…" : "Subscribe"}
-          </button>
+        <form onSubmit={handleSubmit} className="flex w-full max-w-md flex-col gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <label htmlFor={inputId} className="sr-only">
+              Email address
+            </label>
+            <input
+              id={inputId}
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+              className={`w-full border bg-transparent px-4 py-3 text-body outline-none transition-colors ${inputBorder} focus-visible:border-gold-dark`}
+            />
+            <button
+              type="submit"
+              disabled={status === "loading"}
+              className="inline-flex items-center justify-center bg-gold px-6 py-3 text-button font-medium tracking-[0.02em] text-ink uppercase whitespace-nowrap transition-colors duration-200 hover:bg-gold-light disabled:opacity-60"
+            >
+              {status === "loading" ? "Subscribing…" : status === "error" ? "Try again" : "Subscribe"}
+            </button>
+          </div>
+          {status === "error" ? (
+            <p role="alert" className={`text-body ${textColor}`}>
+              {error}
+            </p>
+          ) : null}
         </form>
       )}
     </div>

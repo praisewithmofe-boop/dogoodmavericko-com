@@ -24,9 +24,9 @@ export const metadata: Metadata = buildMetadata({
 export default function Home() {
   return (
     <div className="flex flex-col">
-      <Terrific30OptIn />
       <Hero />
       <AboutIntro />
+      <Terrific30OptIn />
       <StartHere />
       <FeaturedArticle />
       <LatestArticles />
