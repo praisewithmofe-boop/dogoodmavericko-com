@@ -18,6 +18,9 @@ export const metadata: Metadata = buildMetadata({
 export default function VideosPage() {
   const videos = getAllVideos().slice(0, CONTENT_INDEX_LIMIT);
   const [featured, ...rest] = videos;
+  const categories = VIDEO_CATEGORIES.filter((category) =>
+    rest.some((video) => video.category === category),
+  );
 
   return (
     <div className="flex flex-col">
@@ -34,7 +37,7 @@ export default function VideosPage() {
 
       <Section tone="paper-dim">
         <SectionHeading eyebrow="Browse" title="Latest Videos" className="mb-10" />
-        <VideoIndexClient videos={rest.map(toVideoSummary)} categories={VIDEO_CATEGORIES} />
+        <VideoIndexClient videos={rest.map(toVideoSummary)} categories={categories} />
       </Section>
     </div>
   );

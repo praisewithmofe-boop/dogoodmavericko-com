@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Wordmark } from "@/components/layout/Wordmark";
 import { NewsletterSignup } from "@/components/conversion/NewsletterSignup";
 import { SocialLinks } from "@/components/layout/SocialLinks";
-import { FOOTER_NAV_GROUPS, SOCIAL_LINKS } from "@/lib/constants";
+import { FOOTER_NAV_GROUPS } from "@/lib/constants";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -54,24 +54,10 @@ export function SiteFooter() {
           <SocialLinks tone="dark" />
         </div>
 
-        <div className="mt-12 flex flex-col-reverse items-start justify-between gap-6 border-t border-border-dark pt-8 sm:flex-row sm:items-center">
+        <div className="mt-12 border-t border-border-dark pt-8">
           <span className="text-meta tracking-[0.02em] text-fog">
             © {year} Dogood Mavericko. All rights reserved.
           </span>
-
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            {SOCIAL_LINKS.map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-meta font-medium tracking-[0.04em] text-fog uppercase transition-colors duration-200 hover:text-gold-light"
-              >
-                {social.label}
-              </a>
-            ))}
-          </div>
         </div>
       </div>
     </footer>

@@ -59,7 +59,6 @@ const STATIC_TITLES = [
   ["Contact Me", false],
   ["Privacy Policy", false],
   ["Terms & Conditions", false],
-  ["Style Guide", false],
 ];
 
 function fail(message) {

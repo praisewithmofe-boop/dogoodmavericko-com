@@ -31,7 +31,7 @@ export function MobileNav({ isOpen, onClose, onOpenSearch }: MobileNavProps) {
 
   return (
     <div
-      className={`fixed inset-0 z-40 bg-ink transition-opacity duration-300 lg:hidden ${
+      className={`fixed inset-0 z-40 overflow-y-auto bg-ink transition-opacity duration-300 lg:hidden ${
         isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
       }`}
       role="dialog"
@@ -40,7 +40,7 @@ export function MobileNav({ isOpen, onClose, onOpenSearch }: MobileNavProps) {
       inert={!isOpen}
     >
       <div
-        className={`flex h-full flex-col justify-between px-6 pt-28 pb-10 transition-transform duration-300 ${
+        className={`flex min-h-full flex-col justify-between px-6 pt-28 pb-10 transition-transform duration-300 ${
           isOpen ? "translate-y-0" : "-translate-y-4"
         }`}
       >

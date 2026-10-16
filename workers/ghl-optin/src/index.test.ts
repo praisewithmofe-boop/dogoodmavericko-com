@@ -263,6 +263,46 @@ describe("terrific 30 opt-in worker", () => {
     assert.equal(thrownResponse.text.includes(TOKEN), false);
   });
 
+  it("tags a newsletter signup as dogood-newsletter and ignores a client tag list", async () => {
+    const mock = ghlMock();
+    const handler = createHandler({ fetchImpl: mock.fetchImpl, now: () => 1_000_000 });
+    const response = await submit(handler, {
+      email: "Ada@Example.com",
+      list: "newsletter",
+      phone: PHONE,
+      tags: ["terrific30-free", "admin"],
+      firstName: "Ada",
+    });
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(response.json, { ok: true });
+    assert.equal(mock.calls.length, 2);
+    assert.deepEqual(mock.calls[0].body, {
+      locationId: "B61Axi1jMZDmpwTLX4tR",
+      email: "ada@example.com",
+      firstName: "Ada",
+      source: "dogoodmavericko.com",
+    });
+    assert.equal(Object.hasOwn(mock.calls[0].body as object, "phone"), false);
+    assert.equal(Object.hasOwn(mock.calls[0].body as object, "tags"), false);
+    assert.deepEqual(mock.calls[1].body, { tags: ["dogood-newsletter"] });
+  });
+
+  it("rejects a list other than newsletter or terrific30 before calling GoHighLevel", async () => {
+    const mock = ghlMock();
+    const handler = createHandler({ fetchImpl: mock.fetchImpl, now: () => 1_000_000 });
+    for (const list of ["vip", "terrific30-free", "dogood-newsletter", ["newsletter"], { list: "newsletter" }]) {
+      const response = await submit(handler, { email: "ada@example.com", list });
+      assert.equal(response.status, 400, JSON.stringify(list));
+      assert.equal(response.json?.ok, false);
+    }
+    assert.equal(mock.calls.length, 0);
+
+    const explicit = await submit(handler, { email: "ada@example.com", list: "terrific30", tags: ["dogood-newsletter"] });
+    assert.equal(explicit.status, 200);
+    assert.deepEqual(mock.calls[1].body, { tags: ["terrific30-free"] });
+  });
+
   it("rate limits repeated signups from one address", async () => {
     let nowMs = 5_000_000;
     const mock = ghlMock();

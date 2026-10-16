@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { TerrificPhoneField } from "@/components/terrific30/TerrificPhoneField";
 import { useTerrific30OptIn } from "@/lib/ghl-optin";
@@ -96,14 +97,12 @@ export function Terrific30OptIn() {
               Free forever. No spam — unsubscribe any time.
             </p>
 
-            <a
-              href="https://t.co/xx1yXpnWSi"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/terrific-30"
               className="mt-2 inline-flex w-fit items-center text-button font-semibold uppercase tracking-[0.02em] text-gold-dark underline-offset-4 transition-all duration-200 hover:underline"
             >
               Terrific 30 →
-            </a>
+            </Link>
           </div>
         </div>
       </PageContainer>

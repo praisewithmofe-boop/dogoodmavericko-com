@@ -73,7 +73,7 @@ export const SOCIAL_LINKS = [
   },
   {
     label: "Snapchat",
-    href: "https://www.snapchat.com/@dogoodmaverico?share_id=CydZCzDZ1pU&locale=en-GB",
+    href: "https://www.snapchat.com/@dogoodmavericko",
     icon: "snapchat",
     verb: "Follow",
   },
