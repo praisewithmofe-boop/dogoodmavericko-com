@@ -1,24 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import type { FormEvent } from "react";
 import Image from "next/image";
 import { PageContainer } from "@/components/layout/PageContainer";
+import { useTerrific30OptIn } from "@/lib/ghl-optin";
 import { TERRIFIC30_HERO } from "@/lib/terrific30-content";
 import { HERO_CONTENT } from "@/lib/home-content";
 import { optimizedImageUrl } from "@/lib/images";
 
 export function TerrificHero() {
-  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
-  const [firstName, setFirstName] = useState("");
-  const [email, setEmail] = useState("");
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!email) return;
-    setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 600);
-  }
+  const { status, error, firstName, setFirstName, email, setEmail, handleSubmit } =
+    useTerrific30OptIn();
 
   return (
     <section className="relative flex min-h-[85vh] w-full items-center overflow-hidden">
@@ -82,6 +73,11 @@ export function TerrificHero() {
                 </button>
               </form>
             )}
+            {status === "error" ? (
+              <p role="alert" className="text-body text-bone">
+                {error}
+              </p>
+            ) : null}
             <p className="text-meta tracking-[0.02em] text-fog">
               Free forever. No spam — unsubscribe any time.
             </p>

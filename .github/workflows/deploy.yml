@@ -34,6 +34,10 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build (static export to out/)
+        env:
+          # Public Worker URL only. This is a repository variable, not a secret:
+          # Next inlines it into the static bundle. Never put the GoHighLevel token here.
+          NEXT_PUBLIC_GHL_OPTIN_URL: ${{ vars.NEXT_PUBLIC_GHL_OPTIN_URL }}
         run: npm run build
 
       - name: Upload Pages artifact

@@ -48,3 +48,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cloudflare worker local state and secrets
+workers/**/node_modules
+workers/**/.wrangler
+workers/**/.dev.vars
