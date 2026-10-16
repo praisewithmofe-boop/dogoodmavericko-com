@@ -14,7 +14,10 @@
 // a video once it falls off the feed.
 //
 // Podcast episodes are added only when they were published after the newest
-// episode already on the site. Older RSS episodes are never backfilled.
+// episode already on the site. Pass --backfill once, by hand, to import older
+// RSS episodes that are not already on the site. The scheduled workflow does
+// not pass --backfill, so later runs only add episodes newer than the newest
+// file and will not duplicate the imported catalog.
 
 import fs from "fs";
 import path from "path";
@@ -30,6 +33,8 @@ const YOUTUBE_FEED =
 const PODCAST_FEED = "https://anchor.fm/s/100000644/podcast/rss";
 
 const DRY_RUN = process.argv.includes("--dry-run");
+// One-time catalog import. Leave this off the GitHub workflow.
+const BACKFILL = process.argv.includes("--backfill");
 const UA = "dogoodmavericko-sync/1.0 (+https://dogoodmavericko.com)";
 
 const SITE_NAME = "Dogood Mavericko";
@@ -94,6 +99,25 @@ function htmlToText(value) {
   return decodeEntities(value.replace(/<br\s*\/?>/gi, " ").replace(/<\/p>/gi, " ").replace(/<[^>]+>/g, ""))
     .replace(/\s+/g, " ")
     .trim();
+}
+
+// Feed show notes are short HTML. Keep the paragraph breaks for the episode
+// page, and leave htmlToText for the one-line excerpt and title.
+function showNotes(value) {
+  const stripped = value
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|h[1-6]|li|blockquote|tr)>/gi, "\n\n")
+    .replace(/<li[^>]*>/gi, "\n- ")
+    .replace(/<[^>]+>/g, "");
+  const text = decodeEntities(stripped)
+    .replace(/\{/g, "&#123;")
+    .replace(/\}/g, "&#125;")
+    .split("\n")
+    .map((line) => line.replace(/[ \t\f\v]+/g, " ").trim())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+  return text;
 }
 
 // Drop social hashtags (#Terrific30) and emoji that sit at the end of the
@@ -437,7 +461,7 @@ function planEpisodes(episodes, uploads, existing) {
   }
 
   const cutoff = existing.newestPodcastPublished;
-  if (!cutoff) {
+  if (!cutoff && !BACKFILL) {
     fail("No podcast episodes are on the site, so there is no cutoff. Refusing to add older RSS episodes.");
   }
 
@@ -452,7 +476,7 @@ function planEpisodes(episodes, uploads, existing) {
       skipped.push({ title, reason: "episode is already on the site" });
       continue;
     }
-    if (episode.published <= cutoff) {
+    if (!BACKFILL && cutoff && episode.published <= cutoff) {
       skipped.push({
         title,
         reason: `published ${episode.published} is not after the newest episode on the site (${cutoff})`,
@@ -463,14 +487,21 @@ function planEpisodes(episodes, uploads, existing) {
       skipped.push({ title, reason: "title is already used" });
       continue;
     }
-    const slug = slugify(title);
+    let slug = slugify(title);
     if (!slug) fail(`Episode "${title}" produced an empty slug`);
-    if (existing.slugs.has(slug) || fs.existsSync(path.join(PODCAST_DIR, `${slug}.mdx`))) {
-      skipped.push({ title, reason: `slug ${slug} already exists` });
-      continue;
+    const slugTaken = (candidate) =>
+      existing.slugs.has(candidate) || fs.existsSync(path.join(PODCAST_DIR, `${candidate}.mdx`));
+    if (slugTaken(slug)) {
+      const alt = episode.episodeNumber === 0 ? `${slug}-trailer` : `${slug}-ep-${episode.episodeNumber}`;
+      if (slugTaken(alt)) {
+        skipped.push({ title, reason: `slug ${slug} and ${alt} already exist` });
+        continue;
+      }
+      slug = alt;
     }
-    const notes = htmlToText(episode.description);
-    const excerpt = notes ? `${title}. ${notes}` : title;
+    const notes = showNotes(episode.description);
+    const notesLine = htmlToText(episode.description);
+    const excerpt = notesLine ? `${title}. ${notesLine}` : title;
     const match = youtubeByKey.get(normalizeMatch(episode.rawTitle));
     const youtubeUrl = match ? match.link : "";
     const imageName = artworkName(episode.episodeNumber, slug);

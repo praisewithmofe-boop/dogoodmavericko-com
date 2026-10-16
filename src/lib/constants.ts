@@ -30,8 +30,9 @@ export const BLOG_CATEGORIES = [
 
 export const VIDEO_CATEGORIES = [...BLOG_CATEGORIES, "Terrific 30"] as const;
 
-// The videos and podcast index pages feature the newest entry and list the
-// rest, twelve in total. Older entries keep their own pages and stay in the sitemap.
+// The videos index features the newest entry and lists the rest, twelve in
+// total. The podcast index lists every episode, newest first. Older entries
+// keep their own pages and stay in the sitemap.
 export const CONTENT_INDEX_LIMIT = 12;
 
 export const SOCIAL_LINKS = [

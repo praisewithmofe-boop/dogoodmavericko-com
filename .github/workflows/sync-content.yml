@@ -2,7 +2,8 @@
 # deploy workflow to publish them. A push made with the default GITHUB_TOKEN
 # does not start other workflows, so this run dispatches Deploy afterwards.
 # Podcast episodes are added only when they are newer than the newest episode
-# already on the site. Older RSS episodes are never backfilled.
+# already on the site. Do not pass --backfill here: the older catalog is
+# imported by hand, and a later run must not add those episodes again.
 name: Sync new videos and podcast episodes
 
 on:
