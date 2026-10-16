@@ -4,6 +4,7 @@ import { RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS, createHandler } from "./index.ts"
 
 const TOKEN = "pit-test-token-value";
 const ORIGIN = "https://dogoodmavericko.com";
+const PHONE = "+12025550123";
 
 interface Call {
   url: string;
@@ -61,7 +62,8 @@ async function submit(
   if (init?.origin === undefined) headers.set("Origin", ORIGIN);
   if (init?.ip) headers.set("CF-Connecting-IP", init.ip);
   const method = init?.method ?? "POST";
-  const raw = init?.raw ?? (body === undefined ? "" : JSON.stringify(body));
+  const payload = withDefaultPhone(body);
+  const raw = init?.raw ?? (payload === undefined ? "" : JSON.stringify(payload));
   const request = new Request("https://ghl-optin.example.workers.dev/", {
     method,
     headers,
@@ -76,6 +78,11 @@ async function submit(
     json = null;
   }
   return { status: response.status, text, json, headers: response.headers };
+}
+
+function withDefaultPhone(body: unknown): unknown {
+  if (!body || typeof body !== "object" || Array.isArray(body) || "phone" in body) return body;
+  return { ...body, phone: PHONE };
 }
 
 describe("terrific 30 opt-in worker", () => {
@@ -103,6 +110,7 @@ describe("terrific 30 opt-in worker", () => {
     assert.deepEqual(upsert.body, {
       locationId: "B61Axi1jMZDmpwTLX4tR",
       email: "ada@example.com",
+      phone: PHONE,
       firstName: "Ada",
       source: "dogoodmavericko.com",
     });
@@ -122,7 +130,7 @@ describe("terrific 30 opt-in worker", () => {
     const request = new Request("https://ghl-optin.example.workers.dev/", {
       method: "POST",
       headers,
-      body: JSON.stringify({ firstName: "   ", email: "ada@example.com" }),
+      body: JSON.stringify({ firstName: "   ", email: "ada@example.com", phone: "+1 (202) 555-0199" }),
     });
     const response = await handler.fetch(request, {
       GHL_PRIVATE_INTEGRATION_TOKEN: `  ${TOKEN}  `,
@@ -132,6 +140,7 @@ describe("terrific 30 opt-in worker", () => {
     assert.deepEqual(mock.calls[0].body, {
       locationId: "loc_custom",
       email: "ada@example.com",
+      phone: "+12025550199",
       source: "dogoodmavericko.com",
     });
     assert.equal(mock.calls[0].headers.get("Authorization"), `Bearer ${TOKEN}`);
@@ -186,6 +195,25 @@ describe("terrific 30 opt-in worker", () => {
     assert.equal(response.headers.get("Access-Control-Allow-Origin"), null);
   });
 
+  it("saves a valid phone and rejects a malformed one", async () => {
+    const mock = ghlMock();
+    const handler = createHandler({ fetchImpl: mock.fetchImpl, now: () => 1_000_000 });
+
+    const invalid = await submit(handler, { email: "ada@example.com", phone: "2025550123" });
+    assert.equal(invalid.status, 400);
+    assert.match(invalid.json?.error ?? "", /phone/i);
+    assert.equal(mock.calls.length, 0);
+
+    const omitted = await submit(handler, { email: "ada@example.com", phone: "" });
+    assert.equal(omitted.status, 200);
+    assert.equal(Object.hasOwn(mock.calls[0].body as object, "phone"), false);
+
+    const formatted = await submit(handler, { email: "ada@example.com", phone: "+44 7911 123456" });
+    assert.equal(formatted.status, 200);
+    assert.equal((mock.calls[2].body as { phone: string }).phone, "+447911123456");
+    assert.equal(Object.hasOwn(mock.calls[3].body as object, "phone"), false);
+  });
+
   it("rejects an invalid email before calling GoHighLevel", async () => {
     const mock = ghlMock();
     const handler = createHandler({ fetchImpl: mock.fetchImpl, now: () => 1_000_000 });
@@ -202,7 +230,7 @@ describe("terrific 30 opt-in worker", () => {
     const request = new Request("https://ghl-optin.example.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json", Origin: ORIGIN },
-      body: JSON.stringify({ email: "ada@example.com" }),
+      body: JSON.stringify({ email: "ada@example.com", phone: PHONE }),
     });
     const response = await handler.fetch(request, {});
     const text = await response.text();

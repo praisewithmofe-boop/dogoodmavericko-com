@@ -1,11 +1,23 @@
 "use client";
 
 import { PageContainer } from "@/components/layout/PageContainer";
+import { TerrificPhoneField } from "@/components/terrific30/TerrificPhoneField";
 import { useTerrific30OptIn } from "@/lib/ghl-optin";
 
 export function Terrific30OptIn() {
-  const { status, error, firstName, setFirstName, email, setEmail, handleSubmit } =
-    useTerrific30OptIn();
+  const {
+    status,
+    error,
+    firstName,
+    setFirstName,
+    email,
+    setEmail,
+    countryIso,
+    setCountryIso,
+    phone,
+    setPhone,
+    handleSubmit,
+  } = useTerrific30OptIn();
 
   return (
     <section className="border-b border-border bg-paper-dim">
@@ -28,42 +40,51 @@ export function Terrific30OptIn() {
                 You&rsquo;re in. Check your inbox to confirm and get started.
               </p>
             ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-3 sm:flex-row sm:items-stretch"
-              >
-                <label htmlFor="t30-first-name" className="sr-only">
-                  First name
-                </label>
-                <input
-                  id="t30-first-name"
-                  type="text"
-                  autoComplete="given-name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="First name"
-                  className="w-full border border-border bg-paper px-4 py-3 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-dark sm:w-40"
-                />
-                <label htmlFor="t30-email" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  id="t30-email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="w-full border border-border bg-paper px-4 py-3 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-dark sm:flex-1"
-                />
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="inline-flex items-center justify-center bg-gold px-6 py-3 text-button font-medium tracking-[0.02em] text-ink uppercase whitespace-nowrap transition-colors duration-200 hover:bg-gold-light disabled:opacity-60"
-                >
-                  {status === "loading" ? "Joining…" : "Join Terrific 30"}
-                </button>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+                  <label htmlFor="t30-first-name" className="sr-only">
+                    First name
+                  </label>
+                  <input
+                    id="t30-first-name"
+                    type="text"
+                    autoComplete="given-name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="First name"
+                    className="w-full border border-border bg-paper px-4 py-3 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-dark sm:w-40"
+                  />
+                  <label htmlFor="t30-email" className="sr-only">
+                    Email address
+                  </label>
+                  <input
+                    id="t30-email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full border border-border bg-paper px-4 py-3 text-body text-charcoal outline-none transition-colors placeholder:text-slate focus-visible:border-gold-dark sm:flex-1"
+                  />
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-stretch">
+                  <TerrificPhoneField
+                    idPrefix="t30"
+                    tone="light"
+                    countryIso={countryIso}
+                    onCountryIso={setCountryIso}
+                    phone={phone}
+                    onPhone={setPhone}
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
+                    className="inline-flex items-center justify-center bg-gold px-6 py-3 text-button font-medium tracking-[0.02em] text-ink uppercase whitespace-nowrap transition-colors duration-200 hover:bg-gold-light disabled:opacity-60"
+                  >
+                    {status === "loading" ? "Joining…" : "Join Terrific 30"}
+                  </button>
+                </div>
               </form>
             )}
             {status === "error" ? (

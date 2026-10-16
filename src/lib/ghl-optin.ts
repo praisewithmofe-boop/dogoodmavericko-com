@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { DEFAULT_COUNTRY_ISO } from "@/lib/dial-codes";
+import { toE164 } from "@/lib/phone";
 
 /**
  * Public relay URL for Terrific 30 signups.
@@ -23,17 +25,20 @@ export type OptInResult = { ok: true } | { ok: false; error: string };
 export async function submitTerrific30OptIn(input: {
   firstName: string;
   email: string;
+  phone: string;
 }): Promise<OptInResult> {
   const email = input.email.trim();
   const firstName = input.firstName.trim();
+  const phone = input.phone.trim();
   if (!email) return { ok: false, error: "Enter a valid email address." };
+  if (!phone) return { ok: false, error: "Enter a valid phone number." };
   if (!GHL_OPTIN_URL) return { ok: false, error: UNAVAILABLE };
 
   try {
     const response = await fetch(GHL_OPTIN_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(firstName ? { firstName, email } : { email }),
+      body: JSON.stringify(firstName ? { firstName, email, phone } : { email, phone }),
       cache: "no-store",
     });
 
@@ -64,16 +69,26 @@ export function useTerrific30OptIn() {
   const [error, setError] = useState("");
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [countryIso, setCountryIso] = useState(DEFAULT_COUNTRY_ISO);
+  const [phone, setPhone] = useState("");
   const inFlight = useRef(false);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (inFlight.current) return;
+
+    const parsedPhone = toE164(countryIso, phone);
+    if (!parsedPhone.ok) {
+      setStatus("error");
+      setError(parsedPhone.error);
+      return;
+    }
+
     inFlight.current = true;
     setStatus("loading");
     setError("");
 
-    void submitTerrific30OptIn({ firstName, email }).then((result) => {
+    void submitTerrific30OptIn({ firstName, email, phone: parsedPhone.phone }).then((result) => {
       inFlight.current = false;
       if (result.ok) {
         setStatus("success");
@@ -84,5 +99,17 @@ export function useTerrific30OptIn() {
     });
   }
 
-  return { status, error, firstName, setFirstName, email, setEmail, handleSubmit };
+  return {
+    status,
+    error,
+    firstName,
+    setFirstName,
+    email,
+    setEmail,
+    countryIso,
+    setCountryIso,
+    phone,
+    setPhone,
+    handleSubmit,
+  };
 }

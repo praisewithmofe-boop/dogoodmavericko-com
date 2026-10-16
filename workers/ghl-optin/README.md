@@ -1,8 +1,8 @@
 # Terrific 30 signup relay
 
-This Cloudflare Worker accepts the Terrific 30 form (`firstName`, `email`) and writes the contact in GoHighLevel. The private integration token lives only as a Worker secret. The static site never sees it.
+This Cloudflare Worker accepts the Terrific 30 form (`firstName`, `email`, `phone`) and writes the contact in GoHighLevel. `phone` is an E.164 number such as `+12025550123`. The form requires it. A request that leaves it out still succeeds, so an older copy of the page keeps working; a phone that is present must be valid. The private integration token lives only as a Worker secret. The static site never sees it.
 
-The Worker upserts the contact (`locationId`, `firstName`, `email`, `source`) and then adds the tag `terrific30-free`. Tags are not sent on the upsert, so existing tags stay in place.
+The Worker upserts the contact (`locationId`, `firstName`, `email`, `phone`, `source`) and then adds the tag `terrific30-free`. Tags are not sent on the upsert, so existing tags stay in place.
 
 Allowed browser origins: `https://dogoodmavericko.com`, plus `http://localhost` and `http://127.0.0.1` (any port) for local testing.
 
